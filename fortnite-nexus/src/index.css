@@ -1,0 +1,58 @@
+@import './components/navbar.css';
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  background-color: #4b5361;
+  color: white;
+}
+
+ /* Keyframes for the pulsing animation */
+        @keyframes pulse {
+            50% {
+                opacity: .5;
+            }
+        }
+
+        /* The main container for the skeleton loader */
+        .skeleton-card {
+            width: 100%;
+            min-width: fit-content;
+            max-width: 70vw; /* Equivalent to max-w-md */
+            background-color: #ffffff; /* Equivalent to bg-white */
+            padding: 1.5rem; /* Equivalent to p-6 */
+            border-radius: 0.75rem; /* Equivalent to rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-lg */
+            border: 1px solid #e5e7eb; /* Equivalent to border-gray-200 */
+        }
+
+        /* The container for the lines that has the animation */
+        .skeleton-loader {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem; /* Equivalent to space-y-4 */
+        }
+
+        /* Individual skeleton line styling */
+        .skeleton-line {
+            height: 1rem; /* Equivalent to h-4 */
+            background-color: #e5e7eb; /* Equivalent to bg-gray-200 */
+            border-radius: 0.375rem; /* Equivalent to rounded-md */
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #31363f; /* dark:bg-gray-900 */
+            }
+            .skeleton-card {
+                background-color: #31363f; /* dark:bg-gray-800 */
+                border-color: #374151; /* dark:border-gray-700 */
+            }
+            .skeleton-line {
+                background-color: #374151; /* dark:bg-gray-700 */
+            }
+        }
