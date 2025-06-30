@@ -97,6 +97,8 @@ h2 {
     box-shadow: #2a2b2b 1px 0px 15px 2px;
 }
 
+
+
 .stats-item h4 {
     font-weight: 900;
     margin: 0;
@@ -109,4 +111,17 @@ h2 {
     font-weight: 900;
     margin: 0;
     padding: 0;
+}
+
+.stats-item-graph{
+    margin-top: 0;
+    text-align: center;
+    margin: 2rem;
+    background-color: #4b5361;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    min-height: fit-content;
+    box-shadow: #2a2b2b 1px 0px 15px 2px;
+    font-family: 'Poppins', sans-serif;
+    color: #2a2b2b !important;
 }
