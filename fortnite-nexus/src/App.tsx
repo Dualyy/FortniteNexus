@@ -37,6 +37,32 @@ const [kdData, setKdData] = useState([{
   kd:0
 }])
 
+const [winrateData, setWinRateData] = useState([{
+  name: "solo",
+  winrate: 0
+},
+{
+  name: "duo",
+  winrate:0
+},
+{
+  name: "squad",
+  winrate:0
+}])
+
+const [winData, setWinData] = useState([{
+  name: "solo",
+  wins: 0
+},
+{
+  name: "duo",
+  wins:0
+},
+{
+  name: "squad",
+  wins:0
+}])
+
  async function getFortniteStats(searchParam :string | FormData) {
   
   let username: string | FormDataEntryValue;
@@ -62,20 +88,21 @@ const [kdData, setKdData] = useState([{
 
     if (response.status === 200 ) {
       console.log(`Data fetched successfully: for  ${username}`, );
+      if(username !== compareUser)
       setUser(username);
     }
 
      if (typeof searchParam === 'string' && response.status === 200) {
       username = searchParam;
-      setUser(username)
+      if(username !== compareUser) setUser(username)
     }else if (searchParam instanceof FormData && response.status === 200) {
       username = searchParam.get('search');
-      setUser(username as string);
-    } else {
+      if(username !== compareUser) setUser(username as string);
+    } else if(username === compareUser){alert('cant compare to self')} else {
         console.error('Invalid searchParams type. Expected string or FormData.');
         alert('Invalid searchParams type. Expected string or FormData.');
         return;
-    }
+    } 
   if (!username) {
     console.error('Username is required');
     return;
@@ -89,18 +116,20 @@ const [kdData, setKdData] = useState([{
     return;
   }
     
-    setTest((response.data));
-    setWins(response.data.data.stats.all.solo.wins);
-    setMatches(response.data.data.stats.all.solo.matches);
-    setKd(response.data.data.stats.all.solo.kd);
-  
-    return response.data;
+   // Return all relevant data for the caller to handle
+    return {
+      username,
+      stats: response.data.data.stats.all,
+      battlePass: response.data.data.battlePass,
+      raw: response.data
+    };
   } catch (error) {
     console.error('Error fetching data:', error);
     alert('Error fetching data. Please try again later.');
   }
   
 }
+
 
 function setGraphData() {
   if (test) {
@@ -159,6 +188,33 @@ function getWinRate() {
   }
 }
 
+function getWinRateDuo() {
+  if (test) {
+    const winRate = test.data.stats.all.duo.wins / test.data.stats.all.duo.matches * 100;
+    return winRate.toFixed(2) + '%';
+  }
+}
+
+function getWinRateSquad() {
+  if (test) {
+    const winRate = test.data.stats.all.squad.wins / test.data.stats.all.squad.matches * 100;
+    return winRate.toFixed(2) + '%';
+  }
+}
+
+function setWinrateData(){
+  if(test) {
+    setWinRateData(prevData => {
+      prevData.map(item => {
+        if(item.name ==="solo") return {...item, winrate: getWinRate()}
+        if(item.name==="duo") return {...item, winrate: getWinRateDuo()}
+        if(item.name==="squad") return {...item, winrate: getWinRateSquad()}
+      })
+    })
+  }
+}
+
+
 
 
 function BarChartComponent() {
@@ -183,12 +239,65 @@ function BarChartComponent() {
     />
   );
 }
+function BarChartComponentWinRate() {
+  if (!test) return null;
+  return (
+    <BarChart 
+      xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
+      series={[{ data: [winrateData[0].winrate, winrateData[1].winrate, winrateData[2].winrate] } ]}
+      height={300}
+      barLabel="value"
+      colors={['#43787b', '#82ca9d', '#ffc658']}
+     sx={{
+  '.MuiChartsAxis-tickLabel': { fill: '#ffffff !important' },
+  '.MuiChartsAxis-label': { fill: '#ffffff !important' },
+  '.MuiChartsBar-label': { fill: '#ffffff !important' },
+  '.MuiChartsBar-bar:hover': { fill: '#82ca9d !important'},
+  '.MuiChartsAxis-line': { stroke: '#ffffff !important', strokeWidth: 1 },
+  '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
+  '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
+  '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffffff !important'},
+}}
+    />
+  );
+}
+
+function BarChartComponentWin() {
+  if (!test) return null;
+  return (
+    <BarChart 
+      xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
+      series={[{ data: [winData[0].wins, winData[1].wins, winData[2].wins] } ]}
+      height={300}
+      barLabel="value"
+      colors={['#43787b', '#82ca9d', '#ffc658']}
+     sx={{
+  '.MuiChartsAxis-tickLabel': { fill: '#ffffff !important' },
+  '.MuiChartsAxis-label': { fill: '#ffffff !important' },
+  '.MuiChartsBar-label': { fill: '#ffffff !important' },
+  '.MuiChartsBar-bar:hover': { fill: '#82ca9d !important'},
+  '.MuiChartsAxis-line': { stroke: '#ffffff !important', strokeWidth: 1 },
+  '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
+  '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
+  '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffffff !important'},
+}}
+    />
+  );
+}
+
+function BattlePass(){
+  return (<>
+        <p>Level: {compare.battlePass.level}</p>
+        <p>Progress: {compare.battlePass.progress}%</p>
+  </>)
+}
 
 function Stats() {
   return(<>
 <div className='paragraph'>
   <div className="skeleton-card">
     <div className='profile-container'> 
+      <div className='profile-one'>
       <div className='profile-avatar'>
         <img className='profile-image' src={'https://fortnite-api.com/images/cosmetics/br/cid_a_063_athena_commando_f_cottoncandy/variants/material/mat1.png'} alt="Profile" />
       </div>
@@ -198,8 +307,22 @@ function Stats() {
         <p>Level: {getLevel()}</p>
         <p>Progress: {getProgress()}%</p>
       </div>
-    
-
+    </div>
+    {/* User 2 after select */}
+    <div className="versus">
+      <h3>V/S</h3>
+    </div>
+    <div className='profile-two'>
+      <div className='profile-info--right'>
+        <h2>{compareUser}</h2>
+        <hr/>
+        {compare ? <BattlePass /> : "Loading...."}
+        
+      </div>
+       <div className='profile-avatar'>
+        <img className='profile-image' src={'https://fortnite-api.com/images/cosmetics/br/cid_a_063_athena_commando_f_cottoncandy/variants/material/mat1.png'} alt="Profile" />
+      </div>
+    </div>
     </div>
         <div>
           <br/>
@@ -220,8 +343,19 @@ function Stats() {
           <h4>win rate</h4>
           <h3>{getWinRate()}</h3>
         </div>
+        <div className='graphs'>
         <div className='stats-item-graph'>
+          <h2>K/D ratio</h2>
   <BarChartComponent />
+</div>
+<div className='stats-item-graph'>
+  <h2>win rate %</h2>
+  <BarChartComponentWinRate />
+</div>
+<div className='stats-item-graph'>
+  <h2>wins</h2>
+  <BarChartComponentWin />
+</div>
 </div>
         </div>
       </div>
@@ -251,8 +385,27 @@ function skeleton() {
 }
 
 
+
+
 useEffect(() => {
-  getFortniteStats(user);
+  let hello;
+  async function getStatsAsync(newUser){
+  hello = await getFortniteStats(newUser);
+  console.log(hello)
+  return hello;
+  }
+  getStatsAsync(user).then(userOneStats => {
+    if(userOneStats){
+    setTest(userOneStats.raw)
+    setWins(userOneStats.stats.overall.wins)
+    setKd(userOneStats.stats.overall.kd)
+    setMatches(userOneStats.stats.overall.matches)
+    }
+  })
+  if(compareUser){
+      getStatsAsync(compareUser).then(comparedUser => setCompare(comparedUser))
+    }
+  
   // Don't call setTest here, it's already called in getFortniteStats
   // Don't call setGraphData here
 }, []);
@@ -265,6 +418,16 @@ useEffect(() => {
       { name: "solo", kd: test.data.stats.all.solo.kd },
       { name: "duo", kd: test.data.stats.all.duo.kd },
       { name: "squad", kd: test.data.stats.all.squad.kd }
+    ]);
+    setWinRateData([
+      { name: "solo", winrate: test.data.stats.all.solo.winRate },
+      { name: "duo", winrate: test.data.stats.all.duo.winRate },
+      { name: "squad", winrate: test.data.stats.all.squad.winRate }
+    ]);
+    setWinData([
+      { name: "solo", wins: test.data.stats.all.solo.wins },
+      { name: "duo", wins: test.data.stats.all.duo.wins },
+      { name: "squad", wins: test.data.stats.all.squad.wins }
     ]);
   }
 }, [test]);
