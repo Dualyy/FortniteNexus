@@ -21,7 +21,7 @@ const [wins, setWins] = useState(0);
 const [matches, setMatches] = useState(0);
 const [kd, setKd] = useState(0);
 const [compare, setCompare] = useState(null);
-const [compareUser, setCompareUser] = useState("guzimanis"); // Default username for comparison
+const [compareUser, setCompareUser] = useState("chocoberry4"); // Default username for comparison
 const [DuoKd, setDuoKd] = useState(0);
 const [SquadKd, setSquadKd] = useState(0);
 const [kdData, setKdData] = useState([{
@@ -213,8 +213,6 @@ function setWinrateData(){
     })
   }
 }
-
-
 
 
 function BarChartComponent() {

@@ -97,8 +97,6 @@ h2 {
     box-shadow: #2a2b2b 1px 0px 15px 2px;
 }
 
-
-
 .stats-item h4 {
     font-weight: 900;
     margin: 0;
@@ -134,7 +132,7 @@ h2 {
     justify-content: center;
 }
 .profile-two{
-    margin-right:auto;
+    margin-right:40px;
     display: flex;
 }
 
@@ -152,7 +150,7 @@ h2 {
 .versus{
     display: flex;
     justify-content: center;
-    align-content: center;
+    align-self: center;
     margin-left: auto;
     margin-right: auto;
     font-size: xx-large;
