@@ -24,6 +24,14 @@ const [compare, setCompare] = useState(null);
 const [compareUser, setCompareUser] = useState("chocoberry4"); // Default username for comparison
 const [DuoKd, setDuoKd] = useState(0);
 const [SquadKd, setSquadKd] = useState(0);
+
+function getCompareUserData(){
+  console.log("test")
+}
+
+
+// console.log(compareUserData)
+
 const [kdData, setKdData] = useState([{
   name: "solo",
   kd: 0
@@ -111,7 +119,7 @@ const [winData, setWinData] = useState([{
   if( response.status !== 200 || !response.data || response.data.error) {
     console.error('Error fetching data:', response.data.error);
     alert('Error fetching data. Please try again later.');
-    console.log(username)
+    // console.log(username)
     setUser((prevUser) => prevUser); // Reset to default username
     return;
   }
@@ -214,8 +222,107 @@ function setWinrateData(){
   }
 }
 
+function StatsItem(){
+  return (<>
+   <div className='stats-item'>
+          <h4>Wins</h4>
+          <h3>{getWins()}</h3>
+          </div>
+        <div className='stats-item'>
+          <h4>Matches played</h4>
+          <h3>{getMatches()}</h3>
+        </div>
+        <div className='stats-item'>
+          <h4>K/D</h4>
+          <h3>{getKd()}</h3>
+        </div>
+        <div className='stats-item'>
+          <h4>win rate</h4>
+          <h3>{getWinRate()}</h3>
+        </div></>)
+}
+
+function StatsItemWithCompare(){
+  return(<>
+  <div className="user1"> 
+  <h3>{user}</h3>
+   <div className='stats-item' style={{
+    background: compare.stats.overall.wins < parseFloat(getWins()) ? "green" : "red"
+  }}>
+          <h4>Wins</h4>
+          <h3>{getWins()}</h3>
+          </div>
+        <div className='stats-item'>
+          <h4>Matches played</h4>
+          <h3>{getMatches()}</h3>
+        </div>
+        <div className='stats-item' style={{
+    background: compare.stats.overall.kd < parseFloat(getKd()) ? "green" : "red"
+  }}>
+          <h4>K/D</h4>
+          <h3>{getKd()}</h3>
+        </div>
+        <div className='stats-item' style={{
+    background: compare.stats.overall.winRate < parseFloat(getWinRate()) ? "green" : "red"
+  }}>
+          <h4>win rate</h4>
+          <h3>{getWinRate()}</h3>
+        </div>
+        </div>
+        <div className="user2"> 
+  <h3>{compare.username}</h3>
+   <div className='stats-item' style={{
+    background: compare.stats.overall.wins > parseFloat(getWins()) ? "green" : "red"
+  }}>
+          <h4>Wins</h4>
+          <h3>{compare.stats.overall.wins}</h3>
+          </div>
+        <div className='stats-item' >
+          <h4>Matches played</h4>
+          <h3>{compare.stats.overall.matches}</h3>
+        </div>
+        <div className='stats-item' style={{
+    background: compare.stats.overall.kd > parseFloat(getKd()) ? "green" : "red"
+  }}>
+          <h4>K/D</h4>
+          <h3>{compare.stats.overall.kd}</h3>
+        </div>
+       <div
+  className='stats-item'
+  style={{
+    background: compare.stats.overall.winRate > parseFloat(getWinRate()) ? "green" : "red"
+  }}
+>
+          <h4>win rate</h4>
+          <h3>{compare.stats.overall.winRate}</h3>
+        </div>
+        </div>
+        
+        </>)
+}
 
 function BarChartComponent() {
+  if(compare && test){
+    console.log(compare)
+return (<BarChart 
+      xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
+      series={[{ data: [kdData[0].kd, kdData[1].kd, kdData[2].kd]},{ data: [compare.stats.solo.kd, compare.stats.duo.kd, compare.stats.squad.kd] } ]}
+      height={300}
+      barLabel="value"
+      colors={['#43787b', '#82ca9d', '#ffc658']}
+     sx={{
+  '.MuiChartsAxis-tickLabel': { fill: '#ffffff !important' },
+  '.MuiChartsAxis-label': { fill: '#ffffff !important' },
+  '.MuiChartsBar-label': { fill: '#ffffff !important' },
+  '.MuiChartsBar-bar:hover': { fill: '#82ca9d !important'},
+  '.MuiChartsAxis-line': { stroke: '#ffffff !important', strokeWidth: 1 },
+  '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
+  '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
+  '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffffff !important'},
+}}
+    />)
+
+    }
   if (!test) return null;
   return (
     <BarChart 
@@ -238,6 +345,27 @@ function BarChartComponent() {
   );
 }
 function BarChartComponentWinRate() {
+  if(compare && test){
+    return(
+      <BarChart 
+      xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
+      series={[{ data: [winrateData[0].winrate, winrateData[1].winrate, winrateData[2].winrate] }, {data: [compare.stats.solo.winRate,compare.stats.duo.winRate,compare.stats.squad.winRate]} ]}
+      height={300}
+      barLabel="value"
+      colors={['#43787b', '#82ca9d', '#ffc658']}
+     sx={{
+  '.MuiChartsAxis-tickLabel': { fill: '#ffffff !important' },
+  '.MuiChartsAxis-label': { fill: '#ffffff !important' },
+  '.MuiChartsBar-label': { fill: '#ffffff !important' },
+  '.MuiChartsBar-bar:hover': { fill: '#82ca9d !important'},
+  '.MuiChartsAxis-line': { stroke: '#ffffff !important', strokeWidth: 1 },
+  '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
+  '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
+  '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffffff !important'},
+}}
+    />
+    )
+  }
   if (!test) return null;
   return (
     <BarChart 
@@ -261,6 +389,28 @@ function BarChartComponentWinRate() {
 }
 
 function BarChartComponentWin() {
+  if(compare && test) {
+    return (
+      <BarChart 
+      xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
+      series={[{ data: [winData[0].wins, winData[1].wins, winData[2].wins] }, {data: [compare.stats.solo.wins,compare.stats.duo.wins,compare.stats.squad.wins,]} ]}
+      height={300}
+      barLabel="value"
+      colors={['#43787b', '#82ca9d', '#ffc658']}
+     sx={{
+  '.MuiChartsAxis-tickLabel': { fill: '#ffffff !important' },
+  '.MuiChartsAxis-label': { fill: '#ffffff !important' },
+  '.MuiChartsBar-label': { fill: '#ffffff !important' },
+  '.MuiChartsBar-bar:hover': { fill: '#82ca9d !important'},
+  '.MuiChartsAxis-line': { stroke: '#ffffff !important', strokeWidth: 1 },
+  '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
+  '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
+  '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffffff !important'},
+}}
+    />
+
+    )
+  }
   if (!test) return null;
   return (
     <BarChart 
@@ -325,22 +475,8 @@ function Stats() {
         <div>
           <br/>
         <div className='stats-container'>
-        <div className='stats-item'>
-          <h4>Wins</h4>
-          <h3>{getWins()}</h3>
-          </div>
-        <div className='stats-item'>
-          <h4>Matches played</h4>
-          <h3>{getMatches()}</h3>
-        </div>
-        <div className='stats-item'>
-          <h4>K/D</h4>
-          <h3>{getKd()}</h3>
-        </div>
-        <div className='stats-item'>
-          <h4>win rate</h4>
-          <h3>{getWinRate()}</h3>
-        </div>
+          {compare ? <StatsItemWithCompare /> : <StatsItem /> }
+        
         <div className='graphs'>
         <div className='stats-item-graph'>
           <h2>K/D ratio</h2>
@@ -401,7 +537,9 @@ useEffect(() => {
     }
   })
   if(compareUser){
-      getStatsAsync(compareUser).then(comparedUser => setCompare(comparedUser))
+      getStatsAsync(compareUser).then(comparedUser => {setCompare(comparedUser)
+      });
+      
     }
   
   // Don't call setTest here, it's already called in getFortniteStats
@@ -427,7 +565,8 @@ useEffect(() => {
       { name: "duo", wins: test.data.stats.all.duo.wins },
       { name: "squad", wins: test.data.stats.all.squad.wins }
     ]);
-  }
+  }  
+
 }, [test]);
 
 
@@ -437,7 +576,6 @@ useEffect(() => {
       <h1 className='main-page-header'>Fortnite<span className='nexus'>Nexus</span></h1>
       <p>Get your Fortnite stats in one place!</p>
       <p>Search for your Fortnite stats by username.</p>
-
     <form action={getFortniteStats} method="get">
       <input className='searchInput' type="text" placeholder="Search.." name="search"/>
     </form>
