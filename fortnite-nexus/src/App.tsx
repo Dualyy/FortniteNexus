@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css'
 import axios from 'axios';
 import { BarChart, barClasses, barElementClasses, barLabelClasses } from '@mui/x-charts/BarChart';
+import Checkbox from '@mui/material/Checkbox';
 
 // Define the server configuration
 // This will read from the .env file in the root directory
@@ -21,9 +22,10 @@ const [wins, setWins] = useState(0);
 const [matches, setMatches] = useState(0);
 const [kd, setKd] = useState(0);
 const [compare, setCompare] = useState(null);
-const [compareUser, setCompareUser] = useState("guzimanis"); // Default username for comparison
+const [compareUser, setCompareUser] = useState(""); // Default username for comparison
 const [DuoKd, setDuoKd] = useState(0);
 const [SquadKd, setSquadKd] = useState(0);
+const [compareBool, setCompareBool] = useState(false);
 
 function getCompareUserData(){
   console.log("test")
@@ -72,6 +74,7 @@ const [winData, setWinData] = useState([{
 }])
 
  async function getFortniteStats(searchParam :string | FormData) {
+
   
   let username: string | FormDataEntryValue;
   // Check if searchParams is a string or an object
@@ -536,29 +539,29 @@ function skeleton() {
 
 
 useEffect(() => {
-  let hello;
-  async function getStatsAsync(newUser){
-  hello = await getFortniteStats(newUser);
-  return hello;
+  async function fetchUserStats() {
+    if (user) {
+      const userOneStats = await getFortniteStats(user);
+      if (userOneStats) {
+        setTest(userOneStats.raw);
+        setWins(userOneStats.stats.overall.wins);
+        setKd(userOneStats.stats.overall.kd);
+        setMatches(userOneStats.stats.overall.matches);
+      }
+    }
   }
-  getStatsAsync(user).then(userOneStats => {
-    if(userOneStats){
-    setTest(userOneStats.raw)
-    setWins(userOneStats.stats.overall.wins)
-    setKd(userOneStats.stats.overall.kd)
-    setMatches(userOneStats.stats.overall.matches)
+  fetchUserStats();
+}, [user]);
+
+useEffect(() => {
+  async function fetchCompareStats() {
+    if (compareUser) {
+      const comparedUser = await getFortniteStats(compareUser);
+      setCompare(comparedUser);
     }
-  })
-  
-  if(compareUser){
-      getStatsAsync(compareUser).then(comparedUser => {setCompare(comparedUser)
-      });
-      
-    }
-  
-  // Don't call setTest here, it's already called in getFortniteStats
-  // Don't call setGraphData here
-}, []);
+  }
+  fetchCompareStats();
+}, [compareUser]);
 
 useEffect(() => {
   console.log(test)
@@ -618,11 +621,26 @@ useEffect(() => {
       <h1 className='main-page-header'>Fortnite<span className='nexus'>Nexus</span></h1>
       <p>Get your Fortnite stats in one place!</p>
       <p>Search for your Fortnite stats by username.</p>
-    <form action={async (event) => {
-      // console.log(event);
-      setTest(await getFortniteStats(event))}} method="get">
-      <input className='searchInput' type="text" placeholder="Search.." name="search"/>
-    </form>
+    <form
+  onSubmit={async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const searchValue = formData.get('search');
+  const isCompare = formData.get('compare') === 'on';
+
+  if (isCompare) {
+    setCompareUser(searchValue);
+  } else {
+    if (user !== searchValue) {
+      setUser(searchValue);
+    }
+  }
+}}
+>
+  <input className='searchInput' type="text" placeholder="Search.." name="search"/>
+  <input className='compare' type='checkbox' id="compare" name="compare"/>
+  <label htmlFor="compare">Compare</label>
+</form>
       
       { test ? <Stats /> : skeleton() }
       </div>
