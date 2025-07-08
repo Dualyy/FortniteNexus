@@ -564,55 +564,39 @@ useEffect(() => {
 }, [compareUser]);
 
 useEffect(() => {
-  console.log(test)
-  if (test) {
-    if(test.data){
-    setWins(test.data.stats.all.overall.wins)
-    setKd(test.data.stats.all.overall.kd)
-    setMatches(test.data.stats.all.overall.matches)
-    setDuoKd(test.data.stats.all.duo.kd);
-    setSquadKd(test.data.stats.all.squad.kd);
-    setKdData([
-      { name: "solo", kd: test.data.stats.all.solo.kd },
-      { name: "duo", kd: test.data.stats.all.duo.kd },
-      { name: "squad", kd: test.data.stats.all.squad.kd }
-    ]);
-    setWinRateData([
-      { name: "solo", winrate: test.data.stats.all.solo.winRate },
-      { name: "duo", winrate: test.data.stats.all.duo.winRate },
-      { name: "squad", winrate: test.data.stats.all.squad.winRate }
-    ]);
-    setWinData([
-      { name: "solo", wins: test.data.stats.all.solo.wins },
-      { name: "duo", wins: test.data.stats.all.duo.wins },
-      { name: "squad", wins: test.data.stats.all.squad.wins }
-    ]);
-    } else {
-      console.log(test)
-      setWins(test.stats.overall.wins)
-    setKd(test.stats.overall.kd)
-    setMatches(test.stats.overall.matches)
-    setDuoKd(test.stats.duo.kd);
-    setSquadKd(test.stats.squad.kd);
-    setKdData([
-      { name: "solo", kd: test.stats.solo.kd },
-      { name: "duo", kd: test.stats.duo.kd },
-      { name: "squad", kd: test.stats.squad.kd }
-    ]);
-    setWinRateData([
-      { name: "solo", winrate: test.stats.solo.winRate },
-      { name: "duo", winrate: test.stats.duo.winRate },
-      { name: "squad", winrate: test.stats.squad.winRate }
-    ]);
-    setWinData([
-      { name: "solo", wins: test.stats.solo.wins },
-      { name: "duo", wins: test.stats.duo.wins },
-      { name: "squad", wins: test.stats.squad.wins }
-    ]);
-    }
-  }  
+  if (!test) return;
 
+  // Prefer the .data.stats.all structure if present, else fallback
+  const stats = test.data?.stats?.all || test.stats;
+  const solo = stats.solo;
+  const duo = stats.duo;
+  const squad = stats.squad;
+  const overall = stats.overall;
+
+  setWins(overall.wins);
+  setKd(overall.kd);
+  setMatches(overall.matches);
+  setDuoKd(duo.kd);
+  setSquadKd(squad.kd);
+
+  setKdData([
+    { name: "solo", kd: solo.kd },
+    { name: "duo", kd: duo.kd },
+    { name: "squad", kd: squad.kd }
+  ]);
+  setWinRateData([
+    { name: "solo", winrate: solo.winRate },
+    { name: "duo", winrate: duo.winRate },
+    { name: "squad", winrate: squad.winRate }
+  ]);
+  setWinData([
+    { name: "solo", wins: solo.wins },
+    { name: "duo", wins: duo.wins },
+    { name: "squad", wins: squad.wins }
+  ]);
 }, [test]);
+
+
 
 
   return (
