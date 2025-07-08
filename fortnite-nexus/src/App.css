@@ -42,11 +42,14 @@ h2 {
     margin-bottom: 20px;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    justify-self: center;
+    align-content: center;
     margin-bottom: 0;
     background-color: #4b5361;
     padding: 1rem;
     border-radius: 0.5rem;
-    min-width: fit-content;
+    min-width: 50vw;
     box-shadow: #2a2b2b 1px 0px 15px 2px;
 }
 
@@ -81,11 +84,13 @@ h2 {
 .stats-container{
     display: flex;
     flex-direction: row;
-    justify-content: center;
     flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
 }
 
 .stats-item{
+    flex-direction: row;
     margin-top: 0;
     text-align: center;
     margin: 2rem;
@@ -127,24 +132,33 @@ h2 {
 
 .graphs{
     display: flex;
-    min-width: fit-content;
+    min-width: 400px;
     flex-wrap: wrap;
     justify-content: center;
 }
 .profile-two{
     margin-right:40px;
     display: flex;
+    flex-wrap: wrap;
+    align-content: center;
 }
 
 .profile-one{
     display: flex;
-    margin-left: auto;
+    flex-wrap: wrap;
+    margin-left: 40px;
+    align-content: center;
 }
 
 .profile-info--right{
     max-width: fit-content;
     align-content: center;
     margin-right: 40px;
+}
+.profile-info--left{
+    max-width: fit-content;
+    align-content: center;
+    margin-left: 40px;
 }
 
 .versus{
@@ -154,4 +168,24 @@ h2 {
     margin-left: auto;
     margin-right: auto;
     font-size: xx-large;
+    padding: 20px;
+}
+
+.user1{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.user2{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: normal;
+    
+}
+
+.user-stats-info{
+    display: flex;
+    flex-direction: row;
 }

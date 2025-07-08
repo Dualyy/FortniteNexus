@@ -21,7 +21,7 @@ const [wins, setWins] = useState(0);
 const [matches, setMatches] = useState(0);
 const [kd, setKd] = useState(0);
 const [compare, setCompare] = useState(null);
-const [compareUser, setCompareUser] = useState("chocoberry4"); // Default username for comparison
+const [compareUser, setCompareUser] = useState("guzimanis"); // Default username for comparison
 const [DuoKd, setDuoKd] = useState(0);
 const [SquadKd, setSquadKd] = useState(0);
 
@@ -172,20 +172,24 @@ function getKd() {
 
 function getLevel() {
   if (test) {
+    if(test.data){
     return test.data.battlePass.level;
+    } else{ return test.battlePass.level}
   }
 }
 
 function getImage(){
   if (test) {
-    console.log(test.data.image);
+    // console.log(test.data.image);
     return test.data.image
   }
 }
 
 function getProgress() {
   if (test) {
+    if(test.data){
     return test.data.battlePass.progress;
+    } else {return test.battlePass.progress}
   }
 }
 
@@ -245,7 +249,10 @@ function StatsItem(){
 function StatsItemWithCompare(){
   return(<>
   <div className="user1"> 
+    <div className='header-user-stat'>
   <h3>{user}</h3>
+  </div>
+  <div className='user-stats-info'>
    <div className='stats-item' style={{
     background: compare.stats.overall.wins < parseFloat(getWins()) ? "green" : "red"
   }}>
@@ -266,11 +273,14 @@ function StatsItemWithCompare(){
     background: compare.stats.overall.winRate < parseFloat(getWinRate()) ? "green" : "red"
   }}>
           <h4>win rate</h4>
-          <h3>{getWinRate()}</h3>
+          <h3>{parseInt(getWinRate()).toFixed(2)+ '%'}</h3>
         </div>
         </div>
         <div className="user2"> 
+          <div className='header-user-stat'>
   <h3>{compare.username}</h3>
+  </div>
+  <div className='user-stats-info'>
    <div className='stats-item' style={{
     background: compare.stats.overall.wins > parseFloat(getWins()) ? "green" : "red"
   }}>
@@ -294,7 +304,9 @@ function StatsItemWithCompare(){
   }}
 >
           <h4>win rate</h4>
-          <h3>{compare.stats.overall.winRate}</h3>
+          <h3>{compare.stats.overall.winRate.toFixed(2) + '%'}</h3>
+        </div>
+        </div>
         </div>
         </div>
         
@@ -303,10 +315,12 @@ function StatsItemWithCompare(){
 
 function BarChartComponent() {
   if(compare && test){
-    console.log(compare)
+    // console.log(compare)
 return (<BarChart 
+  dataset={kdData}
       xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
-      series={[{ data: [kdData[0].kd, kdData[1].kd, kdData[2].kd]},{ data: [compare.stats.solo.kd, compare.stats.duo.kd, compare.stats.squad.kd] } ]}
+      series={[{ data: [kdData[0].kd, kdData[1].kd, kdData[2].kd], label: `${user}`},{ data: [compare.stats.solo.kd, compare.stats.duo.kd, compare.stats.squad.kd], label: `${compareUser}`} ]}
+      
       height={300}
       barLabel="value"
       colors={['#43787b', '#82ca9d', '#ffc658']}
@@ -349,7 +363,7 @@ function BarChartComponentWinRate() {
     return(
       <BarChart 
       xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
-      series={[{ data: [winrateData[0].winrate, winrateData[1].winrate, winrateData[2].winrate] }, {data: [compare.stats.solo.winRate,compare.stats.duo.winRate,compare.stats.squad.winRate]} ]}
+      series={[{ data: [winrateData[0].winrate, winrateData[1].winrate, winrateData[2].winrate],label: `${user}` }, {data: [compare.stats.solo.winRate,compare.stats.duo.winRate,compare.stats.squad.winRate],label: `${compareUser}`} ]}
       height={300}
       barLabel="value"
       colors={['#43787b', '#82ca9d', '#ffc658']}
@@ -393,7 +407,7 @@ function BarChartComponentWin() {
     return (
       <BarChart 
       xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
-      series={[{ data: [winData[0].wins, winData[1].wins, winData[2].wins] }, {data: [compare.stats.solo.wins,compare.stats.duo.wins,compare.stats.squad.wins,]} ]}
+      series={[{ data: [winData[0].wins, winData[1].wins, winData[2].wins],label: `${user}` }, {data: [compare.stats.solo.wins,compare.stats.duo.wins,compare.stats.squad.wins,],label: `${compareUser}`} ]}
       height={300}
       barLabel="value"
       colors={['#43787b', '#82ca9d', '#ffc658']}
@@ -446,7 +460,7 @@ function Stats() {
   <div className="skeleton-card">
     <div className='profile-container'> 
       <div className='profile-one'>
-      <div className='profile-avatar'>
+      <div className='profile-avatar profile-info--left'>
         <img className='profile-image' src={'https://fortnite-api.com/images/cosmetics/br/cid_a_063_athena_commando_f_cottoncandy/variants/material/mat1.png'} alt="Profile" />
       </div>
       <div className='profile-info'>
@@ -461,7 +475,7 @@ function Stats() {
       <h3>V/S</h3>
     </div>
     <div className='profile-two'>
-      <div className='profile-info--right'>
+      <div className='profile-info--right profile-info'>
         <h2>{compareUser}</h2>
         <hr/>
         {compare ? <BattlePass /> : "Loading...."}
@@ -525,7 +539,6 @@ useEffect(() => {
   let hello;
   async function getStatsAsync(newUser){
   hello = await getFortniteStats(newUser);
-  console.log(hello)
   return hello;
   }
   getStatsAsync(user).then(userOneStats => {
@@ -536,6 +549,7 @@ useEffect(() => {
     setMatches(userOneStats.stats.overall.matches)
     }
   })
+  
   if(compareUser){
       getStatsAsync(compareUser).then(comparedUser => {setCompare(comparedUser)
       });
@@ -547,7 +561,12 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
+  console.log(test)
   if (test) {
+    if(test.data){
+    setWins(test.data.stats.all.overall.wins)
+    setKd(test.data.stats.all.overall.kd)
+    setMatches(test.data.stats.all.overall.matches)
     setDuoKd(test.data.stats.all.duo.kd);
     setSquadKd(test.data.stats.all.squad.kd);
     setKdData([
@@ -565,6 +584,29 @@ useEffect(() => {
       { name: "duo", wins: test.data.stats.all.duo.wins },
       { name: "squad", wins: test.data.stats.all.squad.wins }
     ]);
+    } else {
+      console.log(test)
+      setWins(test.stats.overall.wins)
+    setKd(test.stats.overall.kd)
+    setMatches(test.stats.overall.matches)
+    setDuoKd(test.stats.duo.kd);
+    setSquadKd(test.stats.squad.kd);
+    setKdData([
+      { name: "solo", kd: test.stats.solo.kd },
+      { name: "duo", kd: test.stats.duo.kd },
+      { name: "squad", kd: test.stats.squad.kd }
+    ]);
+    setWinRateData([
+      { name: "solo", winrate: test.stats.solo.winRate },
+      { name: "duo", winrate: test.stats.duo.winRate },
+      { name: "squad", winrate: test.stats.squad.winRate }
+    ]);
+    setWinData([
+      { name: "solo", wins: test.stats.solo.wins },
+      { name: "duo", wins: test.stats.duo.wins },
+      { name: "squad", wins: test.stats.squad.wins }
+    ]);
+    }
   }  
 
 }, [test]);
@@ -576,7 +618,9 @@ useEffect(() => {
       <h1 className='main-page-header'>Fortnite<span className='nexus'>Nexus</span></h1>
       <p>Get your Fortnite stats in one place!</p>
       <p>Search for your Fortnite stats by username.</p>
-    <form action={getFortniteStats} method="get">
+    <form action={async (event) => {
+      // console.log(event);
+      setTest(await getFortniteStats(event))}} method="get">
       <input className='searchInput' type="text" placeholder="Search.." name="search"/>
     </form>
       
