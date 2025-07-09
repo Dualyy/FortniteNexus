@@ -12,8 +12,6 @@ const server = {
 
 console.log("Server configuration:", server.API_KEY);
 
-
-
 function App() {
 
 const [userData, setUserData] = useState<UserDataType | null>(null);
@@ -21,8 +19,6 @@ const [user, setUser] = useState("exiira.x3"); // Default username for userDatai
 const [wins, setWins] = useState(0);
 const [matches, setMatches] = useState(0);
 const [kd, setKd] = useState(0);
-
-
 
 type UserDataType = {
   data?: {
@@ -270,7 +266,6 @@ function getWinRate() {
     return winRate.toFixed(2);
   }
 }
-
 
 function StatsItem(){
   return (<>
