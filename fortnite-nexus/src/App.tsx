@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './App.css'
 import axios from 'axios';
 import { BarChart, barClasses, barElementClasses, barLabelClasses } from '@mui/x-charts/BarChart';
-import Checkbox from '@mui/material/Checkbox';
 
 // Define the server configuration
 // This will read from the .env file in the root directory
