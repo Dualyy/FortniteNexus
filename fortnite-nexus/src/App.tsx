@@ -16,21 +16,110 @@ console.log("Server configuration:", server.API_KEY);
 
 
 function App() {
-const [test, setTest] = useState(null);
-const [user, setUser] = useState("exiira.x3"); // Default username for testing
+
+const [userData, setUserData] = useState<UserDataType | null>(null);
+const [user, setUser] = useState("exiira.x3"); // Default username for userDataing
 const [wins, setWins] = useState(0);
 const [matches, setMatches] = useState(0);
 const [kd, setKd] = useState(0);
-const [compare, setCompare] = useState(null);
+
+
+
+type UserDataType = {
+  data?: {
+    stats: {
+      all: {
+        overall: {
+          wins: number;
+          matches: number;
+          kd: number;
+          winRate: number;
+        };
+        solo: {
+          kd: number;
+          winRate: number;
+          wins: number;
+        };
+        duo: {
+          kd: number;
+          winRate: number;
+          wins: number;
+        };
+        squad: {
+          kd: number;
+          winRate: number;
+          wins: number;
+        };
+      };
+    };
+    battlePass: {
+      level: number;
+      progress: number;
+    };
+  };
+  stats?: {
+    overall: {
+      wins: number;
+      matches: number;
+      kd: number;
+      winRate: number;
+    };
+    solo: {
+      kd: number;
+      winRate: number;
+      wins: number;
+    };
+    duo: {
+      kd: number;
+      winRate: number;
+      wins: number;
+    };
+    squad: {
+      kd: number;
+      winRate: number;
+      wins: number;
+    };
+  };
+  battlePass?: {
+    level: number;
+    progress: number;
+  };
+};
+
+
+type StatsType = {
+  username: string;
+  stats: {
+    overall: {
+      wins: number;
+      matches: number;
+      kd: number;
+      winRate: number;
+    };
+    solo: {
+      kd: number;
+      winRate: number;
+      wins: number;
+    };
+    duo: {
+      kd: number;
+      winRate: number;
+      wins: number;
+    };
+    squad: {
+      kd: number;
+      winRate: number;
+      wins: number;
+    };
+  };
+  battlePass: {
+    level: number;
+    progress: number;
+  };
+};
+
+const [compare, setCompare] = useState<StatsType | null>(null);
 const [compareUser, setCompareUser] = useState(""); // Default username for comparison
-const [DuoKd, setDuoKd] = useState(0);
-const [SquadKd, setSquadKd] = useState(0);
-const [compareBool, setCompareBool] = useState(false);
-
-function getCompareUserData(){
-  console.log("test")
-}
-
 
 // console.log(compareUserData)
 
@@ -81,7 +170,7 @@ const [winData, setWinData] = useState([{
     if (typeof searchParam === 'string') {
       username = searchParam;
     }else if (searchParam instanceof FormData) {
-      username = searchParam.get('search');
+      username = searchParam.get('search') as string;
     } else {
         console.error('Invalid searchParams type. Expected string or FormData.');
         return;
@@ -142,92 +231,47 @@ const [winData, setWinData] = useState([{
 }
 
 
-function setGraphData() {
-  if (test) {
-    setKdData(prevData =>
-      prevData.map(item => {
-        if (item.name === "solo") return { ...item, kd: test.data.stats.all.solo.kd };
-        if (item.name === "duo") return { ...item, kd: test.data.stats.all.duo.kd };
-        if (item.name === "squad") return { ...item, kd: test.data.stats.all.squad.kd };
-        return item;
-      })
-    );
-  }
-}
-
 function getWins() {
-  if (test) {
+  if (userData) {
     return wins;
   }
 }
 
 function getMatches() {
-  if (test) {
+  if (userData) {
     return matches;
   }
 }
 
 function getKd() {
-  if (test) {
+  if (userData) {
     return kd;
   }
 }
 
 function getLevel() {
-  if (test) {
-    if(test.data){
-    return test.data.battlePass.level;
-    } else{ return test.battlePass.level}
-  }
-}
-
-function getImage(){
-  if (test) {
-    // console.log(test.data.image);
-    return test.data.image
+  if (userData) {
+    if(userData.data){
+    return userData.data.battlePass.level;
+    } else{ return userData.battlePass.level}
   }
 }
 
 function getProgress() {
-  if (test) {
-    if(test.data){
-    return test.data.battlePass.progress;
-    } else {return test.battlePass.progress}
+  if (userData) {
+    if(userData.data){
+    return userData.data.battlePass.progress;
+    } else {return userData.battlePass.progress}
   }
 }
 
 function getWinRate() {
-  if (test) {
+  if (userData) {
     const winRate = (wins / matches) * 100;
-    return winRate.toFixed(2) + '%';
+    return winRate.toFixed(2);
   }
 }
 
-function getWinRateDuo() {
-  if (test) {
-    const winRate = test.data.stats.all.duo.wins / test.data.stats.all.duo.matches * 100;
-    return winRate.toFixed(2) + '%';
-  }
-}
-
-function getWinRateSquad() {
-  if (test) {
-    const winRate = test.data.stats.all.squad.wins / test.data.stats.all.squad.matches * 100;
-    return winRate.toFixed(2) + '%';
-  }
-}
-
-function setWinrateData(){
-  if(test) {
-    setWinRateData(prevData => {
-      prevData.map(item => {
-        if(item.name ==="solo") return {...item, winrate: getWinRate()}
-        if(item.name==="duo") return {...item, winrate: getWinRateDuo()}
-        if(item.name==="squad") return {...item, winrate: getWinRateSquad()}
-      })
-    })
-  }
-}
 
 function StatsItem(){
   return (<>
@@ -257,7 +301,7 @@ function StatsItemWithCompare(){
   </div>
   <div className='user-stats-info'>
    <div className='stats-item' style={{
-    background: compare.stats.overall.wins < parseFloat(getWins()) ? "green" : "red"
+    background: compare?.stats?.overall?.wins ?? 0 < getWins() ? "green" : "red"
   }}>
           <h4>Wins</h4>
           <h3>{getWins()}</h3>
@@ -267,13 +311,13 @@ function StatsItemWithCompare(){
           <h3>{getMatches()}</h3>
         </div>
         <div className='stats-item' style={{
-    background: compare.stats.overall.kd < parseFloat(getKd()) ? "green" : "red"
+    background: (compare?.stats?.overall.kd ?? 0) < parseFloat(getKd()) ? "green" : "red"
   }}>
           <h4>K/D</h4>
           <h3>{getKd()}</h3>
         </div>
         <div className='stats-item' style={{
-    background: compare.stats.overall.winRate < parseFloat(getWinRate()) ? "green" : "red"
+    background: compare?.stats?.overall.winRate ?? 0 < parseFloat(getWinRate()) ? "green" : "red"
   }}>
           <h4>win rate</h4>
           <h3>{parseInt(getWinRate()).toFixed(2)+ '%'}</h3>
@@ -285,17 +329,17 @@ function StatsItemWithCompare(){
   </div>
   <div className='user-stats-info'>
    <div className='stats-item' style={{
-    background: compare.stats.overall.wins > parseFloat(getWins()) ? "green" : "red"
+    background: (compare?.stats?.overall?.wins ?? 0) > (getWins() ?? 0) ? "green" : "red"
   }}>
           <h4>Wins</h4>
-          <h3>{compare.stats.overall.wins}</h3>
+          <h3>{compare?.stats?.overall?.wins}</h3>
           </div>
         <div className='stats-item' >
           <h4>Matches played</h4>
           <h3>{compare.stats.overall.matches}</h3>
         </div>
         <div className='stats-item' style={{
-    background: compare.stats.overall.kd > parseFloat(getKd()) ? "green" : "red"
+    background: compare.stats.overall.kd > (getKd() ?? 0) ? "green" : "red"
   }}>
           <h4>K/D</h4>
           <h3>{compare.stats.overall.kd}</h3>
@@ -303,11 +347,11 @@ function StatsItemWithCompare(){
        <div
   className='stats-item'
   style={{
-    background: compare.stats.overall.winRate > parseFloat(getWinRate()) ? "green" : "red"
+    background: compare && compare.stats.overall.winRate > Number(getWinRate() ?? 0) ? "green" : "red"
   }}
 >
           <h4>win rate</h4>
-          <h3>{compare.stats.overall.winRate.toFixed(2) + '%'}</h3>
+          <h3>{compare ? (compare.stats.overall.winRate.toFixed(2) + '%') : ''}</h3>
         </div>
         </div>
         </div>
@@ -317,7 +361,7 @@ function StatsItemWithCompare(){
 }
 
 function BarChartComponent() {
-  if(compare && test){
+  if(compare && userData){
     // console.log(compare)
 return (<BarChart 
   dataset={kdData}
@@ -340,7 +384,7 @@ return (<BarChart
     />)
 
     }
-  if (!test) return null;
+  if (!userData) return null;
   return (
     <BarChart 
       xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
@@ -362,7 +406,7 @@ return (<BarChart
   );
 }
 function BarChartComponentWinRate() {
-  if(compare && test){
+  if(compare && userData){
     return(
       <BarChart 
       xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
@@ -383,7 +427,7 @@ function BarChartComponentWinRate() {
     />
     )
   }
-  if (!test) return null;
+  if (!userData) return null;
   return (
     <BarChart 
       xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
@@ -406,7 +450,7 @@ function BarChartComponentWinRate() {
 }
 
 function BarChartComponentWin() {
-  if(compare && test) {
+  if(compare && userData) {
     return (
       <BarChart 
       xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
@@ -428,7 +472,7 @@ function BarChartComponentWin() {
 
     )
   }
-  if (!test) return null;
+  if (!userData) return null;
   return (
     <BarChart 
       xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
@@ -543,7 +587,7 @@ useEffect(() => {
     if (user) {
       const userOneStats = await getFortniteStats(user);
       if (userOneStats) {
-        setTest(userOneStats.raw);
+        setUserData(userOneStats.raw);
         setWins(userOneStats.stats.overall.wins);
         setKd(userOneStats.stats.overall.kd);
         setMatches(userOneStats.stats.overall.matches);
@@ -557,17 +601,19 @@ useEffect(() => {
   async function fetchCompareStats() {
     if (compareUser) {
       const comparedUser = await getFortniteStats(compareUser);
-      setCompare(comparedUser);
+      if (comparedUser) {
+        setCompare(comparedUser);
+      }
     }
   }
   fetchCompareStats();
 }, [compareUser]);
 
 useEffect(() => {
-  if (!test) return;
+  if (!userData) return;
 
   // Prefer the .data.stats.all structure if present, else fallback
-  const stats = test.data?.stats?.all || test.stats;
+  const stats = userData.data?.stats?.all || userData.stats;
   const solo = stats.solo;
   const duo = stats.duo;
   const squad = stats.squad;
@@ -576,8 +622,6 @@ useEffect(() => {
   setWins(overall.wins);
   setKd(overall.kd);
   setMatches(overall.matches);
-  setDuoKd(duo.kd);
-  setSquadKd(squad.kd);
 
   setKdData([
     { name: "solo", kd: solo.kd },
@@ -594,7 +638,7 @@ useEffect(() => {
     { name: "duo", wins: duo.wins },
     { name: "squad", wins: squad.wins }
   ]);
-}, [test]);
+}, [userData]);
 
 
 
@@ -608,15 +652,15 @@ useEffect(() => {
     <form
   onSubmit={async (e) => {
   e.preventDefault();
-  const formData = new FormData(e.target);
+  const formData = new FormData(e.target as HTMLFormElement);
   const searchValue = formData.get('search');
   const isCompare = formData.get('compare') === 'on';
 
   if (isCompare) {
-    setCompareUser(searchValue);
+    setCompareUser(searchValue as string);
   } else {
     if (user !== searchValue) {
-      setUser(searchValue);
+      setUser(searchValue as string);
     }
   }
 }}
@@ -626,7 +670,7 @@ useEffect(() => {
   <label htmlFor="compare">Compare</label>
 </form>
       
-      { test ? <Stats /> : skeleton() }
+      { userData ? <Stats /> : skeleton() }
       </div>
     </>
   )
