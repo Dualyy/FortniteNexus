@@ -118,7 +118,6 @@ const [winData, setWinData] = useState(
         return null;
     }
  
-  
   try {
     const response = await axios.get(`${server.BASE_URL}?name=${username}`, {
       headers: { Authorization: server.API_KEY }
@@ -206,13 +205,16 @@ function StatsItemWithCompare(){
           <h3>{getMatches()}</h3>
         </div>
         <div className='stats-item' style={{
-    background: (compare?.stats?.overall.kd ?? 0) < parseFloat(getKd()) ? "green" : "red"
-  }}>
+  background:
+    (compare?.stats?.overall?.kd ?? 0) < (typeof kd === "number" ? kd : parseFloat(getKd() ?? "0"))
+      ? "green"
+      : "red"
+}}>
           <h4>K/D</h4>
           <h3>{getKd()}</h3>
         </div>
         <div className='stats-item' style={{
-    background: compare?.stats?.overall.winRate ?? 0 < parseFloat(getWinRate()) ? "green" : "red"
+    background: (compare?.stats?.overall.winRate ?? 0) < parseFloat(getWinRate()) ? "green" : "red"
   }}>
           <h4>win rate</h4>
           <h3>{parseInt(getWinRate()).toFixed(2)+ '%'}</h3>
@@ -221,7 +223,6 @@ function StatsItemWithCompare(){
         <div className="user2"> 
           <div className='header-user-stat'>
   <h3>{compare.username}</h3>
-  {console.log(compare.lastModified)}
    <p className="lastUpdate">{new Date(compare.lastModified).toString()}</p>
   </div>
   <div className='user-stats-info'>
@@ -244,7 +245,7 @@ function StatsItemWithCompare(){
        <div
   className='stats-item'
   style={{
-    background: compare && compare.stats.overall.winRate > Number(getWinRate() ?? 0) ? "green" : "red"
+    background: (compare.stats.overall.winRate) > (Number(getWinRate() ?? 0)) ? "green" : "red"
   }}
 >
           <h4>win rate</h4>
@@ -258,11 +259,13 @@ function StatsItemWithCompare(){
 }
 
 type BarChartProps = {
-  dataset?: any[];
-  height?:number;
-  barLabel?: string;
-  colors: string[];
-  sx: React.CSSProperties;
+  user: string;
+  userData: { solo: number; duo: number; squad: number };
+  compareUser?: string;
+  compareData?: { solo: number; duo: number; squad: number };
+  label?: string;
+  color?: string[];
+  sx?: React.CSSProperties;
 }
 
 const barChartCSS ={
@@ -284,7 +287,7 @@ function BarChartStats({
   compareUser,
   compareData,
   color = colors,
-}: BarChartStatsProps) {
+}: BarChartProps) {
   const series = [
     {
       data: [userData.solo, userData.duo, userData.squad],
@@ -504,8 +507,6 @@ setKdData(MODES.map(mode => ({ name: mode, kd: stats[mode].kd })));
 setWinRateData(MODES.map(mode => ({ name: mode, winrate: stats[mode].winRate })));
 setWinData(MODES.map(mode => ({ name: mode, wins: stats[mode].wins })));
 }, [userData]);
-
-
 
 
   return (
