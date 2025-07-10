@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css'
 import axios from 'axios';
-import { BarChart, barClasses, barElementClasses, barLabelClasses } from '@mui/x-charts/BarChart';
+import { BarChart} from '@mui/x-charts/BarChart';
 
 // Define the server configuration
 // This will read from the .env file in the root directory
@@ -91,44 +91,19 @@ const [compareUser, setCompareUser] = useState(""); // Default username for comp
 
 // console.log(compareUserData)
 
-const [kdData, setKdData] = useState([{
-  name: "solo",
-  kd: 0
-},
-{
-  name: "duo",
-  kd:0
-},
-{
-  name: "squad",
-  kd:0
-}])
+const MODES = ["solo", "duo", "squad"] as const;
 
-const [winrateData, setWinRateData] = useState([{
-  name: "solo",
-  winrate: 0
-},
-{
-  name: "duo",
-  winrate:0
-},
-{
-  name: "squad",
-  winrate:0
-}])
+const [kdData, setKdData] = useState(
+  MODES.map(name => ({ name, kd: 0 }))
+);
 
-const [winData, setWinData] = useState([{
-  name: "solo",
-  wins: 0
-},
-{
-  name: "duo",
-  wins:0
-},
-{
-  name: "squad",
-  wins:0
-}])
+const [winrateData, setWinRateData] = useState(
+  MODES.map(name => ({ name, winrate: 0 }))
+);
+
+const [winData, setWinData] = useState(
+  MODES.map(name => ({ name, wins: 0 }))
+);
 
  async function getFortniteStats(searchParam :string | FormData) {
 
@@ -140,50 +115,18 @@ const [winData, setWinData] = useState([{
     }else if (searchParam instanceof FormData) {
       username = searchParam.get('search') as string;
     } else {
-        console.error('Invalid searchParams type. Expected string or FormData.');
-        return;
+        return null;
     }
-  if (!username) {
-    console.error('Username is required');
-    return;
-  }
-  console.log("Fetching stats for:", username);
+ 
   
   try {
     const response = await axios.get(`${server.BASE_URL}?name=${username}`, {
       headers: { Authorization: server.API_KEY }
     });
 
-    if (response.status === 200 ) {
-      console.log(`Data fetched successfully: for  ${username}`, );
-      if(username !== compareUser)
-      setUser(username);
-    }
-
-     if (typeof searchParam === 'string' && response.status === 200) {
-      username = searchParam;
-      if(username !== compareUser) setUser(username)
-    }else if (searchParam instanceof FormData && response.status === 200) {
-      username = searchParam.get('search');
-      if(username !== compareUser) setUser(username as string);
-    } else if(username === compareUser){alert('cant compare to self')} else {
-        console.error('Invalid searchParams type. Expected string or FormData.');
-        alert('Invalid searchParams type. Expected string or FormData.');
-        return;
-    } 
-  if (!username) {
-    console.error('Username is required');
-    return;
-  }
-
   if( response.status !== 200 || !response.data || response.data.error) {
-    console.error('Error fetching data:', response.data.error);
-    alert('Error fetching data. Please try again later.');
-    // console.log(username)
-    setUser((prevUser) => prevUser); // Reset to default username
-    return;
+    return null;
   }
-    console.log(response.data.data.stats.all.overall.lastModified)
    // Return all relevant data for the caller to handle
     return {
       username,
@@ -193,8 +136,7 @@ const [winData, setWinData] = useState([{
       lastModified: response.data.data.stats.all.overall.lastModified
     };
   } catch (error) {
-    console.error('Error fetching data:', error);
-    alert('Error fetching data. Please try again later.');
+    return null
   }
   
 }
@@ -249,9 +191,8 @@ function StatsItemWithCompare(){
   return(<>
   <div className="user1"> 
     <div className='header-user-stat'>
-      {console.log(userData)}
   <h3>{user}</h3>
-  <p className="lastUpdate"> ({new Date(userData?.data?.stats?.all?.overall?.lastModified).toString()}</p>
+  <p className="lastUpdate"> ({new Date(userData?.lastModified).toString()}</p>
   </div>
   <div className='user-stats-info'>
    <div className='stats-item' style={{
@@ -337,14 +278,13 @@ const barChartCSS ={
   const colors = ['#43787b', '#82ca9d', '#ffc658']
 
 function BarChartStats({
-  label,
+  
   user,
   userData,
   compareUser,
   compareData,
   color = colors,
 }: BarChartStatsProps) {
-  const xAxisData = ['Solo', 'Duo', 'Squad'];
   const series = [
     {
       data: [userData.solo, userData.duo, userData.squad],
@@ -359,7 +299,7 @@ function BarChartStats({
   }
   return (
     <BarChart
-      xAxis={[{ data: xAxisData }]}
+      xAxis={[{ data: MODES }]}
       series={series}
       height={300}
       barLabel="value"
@@ -368,117 +308,40 @@ function BarChartStats({
     />
   );
 }
-function BarChartComponentWinRate() {
-  if(compare && userData){
-    return(
-      <BarChart 
-      xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
-      series={[{ data: [winrateData[0].winrate, winrateData[1].winrate, winrateData[2].winrate],label: `${user}` }, {data: [compare.stats.solo.winRate,compare.stats.duo.winRate,compare.stats.squad.winRate],label: `${compareUser}`} ]}
-      height={300}
-      barLabel="value"
-      colors={['#43787b', '#82ca9d', '#ffc658']}
-     sx={{
-  '.MuiChartsAxis-tickLabel': { fill: '#ffffff !important' },
-  '.MuiChartsAxis-label': { fill: '#ffffff !important' },
-  '.MuiChartsBar-label': { fill: '#ffffff !important' },
-  '.MuiChartsBar-bar:hover': { fill: '#82ca9d !important'},
-  '.MuiChartsAxis-line': { stroke: '#ffffff !important', strokeWidth: 1 },
-  '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
-  '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
-  '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffffff !important'},
-}}
-    />
-    )
-  }
-  if (!userData) return null;
-  return (
-    <BarChart 
-      xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
-      series={[{ data: [winrateData[0].winrate, winrateData[1].winrate, winrateData[2].winrate] } ]}
-      height={300}
-      barLabel="value"
-      colors={['#43787b', '#82ca9d', '#ffc658']}
-     sx={{
-  '.MuiChartsAxis-tickLabel': { fill: '#ffffff !important' },
-  '.MuiChartsAxis-label': { fill: '#ffffff !important' },
-  '.MuiChartsBar-label': { fill: '#ffffff !important' },
-  '.MuiChartsBar-bar:hover': { fill: '#82ca9d !important'},
-  '.MuiChartsAxis-line': { stroke: '#ffffff !important', strokeWidth: 1 },
-  '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
-  '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
-  '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffffff !important'},
-}}
-    />
-  );
-}
 
-function BarChartComponentWin() {
-  if(compare && userData) {
-    return (
-      <BarChart 
-      xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
-      series={[{ data: [winData[0].wins, winData[1].wins, winData[2].wins],label: `${user}` }, {data: [compare.stats.solo.wins,compare.stats.duo.wins,compare.stats.squad.wins,],label: `${compareUser}`} ]}
-      height={300}
-      barLabel="value"
-      colors={['#43787b', '#82ca9d', '#ffc658']}
-     sx={{
-  '.MuiChartsAxis-tickLabel': { fill: '#ffffff !important' },
-  '.MuiChartsAxis-label': { fill: '#ffffff !important' },
-  '.MuiChartsBar-label': { fill: '#ffffff !important' },
-  '.MuiChartsBar-bar:hover': { fill: '#82ca9d !important'},
-  '.MuiChartsAxis-line': { stroke: '#ffffff !important', strokeWidth: 1 },
-  '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
-  '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
-  '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffffff !important'},
-}}
-    />
 
-    )
-  }
-  if (!userData) return null;
-  return (
-    <BarChart 
-      xAxis={[{ data: ['Solo', 'Duo', 'Squad'] }]}
-      series={[{ data: [winData[0].wins, winData[1].wins, winData[2].wins] } ]}
-      height={300}
-      barLabel="value"
-      colors={['#43787b', '#82ca9d', '#ffc658']}
-     sx={{
-  '.MuiChartsAxis-tickLabel': { fill: '#ffffff !important' },
-  '.MuiChartsAxis-label': { fill: '#ffffff !important' },
-  '.MuiChartsBar-label': { fill: '#ffffff !important' },
-  '.MuiChartsBar-bar:hover': { fill: '#82ca9d !important'},
-  '.MuiChartsAxis-line': { stroke: '#ffffff !important', strokeWidth: 1 },
-  '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
-  '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
-  '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffffff !important'},
-}}
-    />
-  );
-}
 
-function BattlePass(){
-  return (<>
-        <p>Level: {compare.battlePass.level}</p>
-        <p>Progress: {compare.battlePass.progress}%</p>
-  </>)
-}
+
+
 
 function Profile(props: {whatUser: string, profileClass: string, orientation: string, whatUserData: UserDataType | null}) {
-  return (<>
-  <div className={`${props.profileClass}`}>
+  const level =
+    props.whatUserData?.data?.battlePass.level ??
+    props.whatUserData?.battlePass?.level ??
+    "N/A";
+  const progress =
+    props.whatUserData?.data?.battlePass.progress ??
+    props.whatUserData?.battlePass?.progress ??
+    "N/A";
+  return (
+    <div className={`${props.profileClass}`}>
       <div className={`profile-avatar profile-info--${props.orientation}`}>
-        <img className='profile-image' src={'https://fortnite-api.com/images/cosmetics/br/cid_a_063_athena_commando_f_cottoncandy/variants/material/mat1.png'} alt="Profile" />
+        <img
+          className="profile-image"
+          src={
+            "https://fortnite-api.com/images/cosmetics/br/cid_a_063_athena_commando_f_cottoncandy/variants/material/mat1.png"
+          }
+          alt="Profile"
+        />
       </div>
-      <div className='profile-info'>
+      <div className="profile-info">
         <h2>{props.whatUser}</h2>
-        <hr/>
-        <p>Level: {props.whatUserData.data?.battlePass.level}</p>
-        <p>Progress: {props.whatUserData.data?.battlePass.progress}%</p>
+        <hr />
+        <p>Level: {level}</p>
+        <p>Progress: {progress}%</p>
       </div>
     </div>
-
-  </>)
+  );
 }
 
 function Versus(){
@@ -610,30 +473,18 @@ function Skeleton() {
 
 useEffect(() => {
   async function fetchUserStats() {
-    if (user) {
-      const userOneStats = await getFortniteStats(user);
-      if (userOneStats) {
-        setUserData(userOneStats.raw);
-        setWins(userOneStats.stats.overall.wins);
-        setKd(userOneStats.stats.overall.kd);
-        setMatches(userOneStats.stats.overall.matches);
-      }
+    if (userData) {
+        console.log(user)
+        setWins(userData.stats.wins);
+        setKd(userData.stats.kd);
+        setMatches(userData.stats.matches);
+      
     }
   }
   fetchUserStats();
 }, [user]);
 
-useEffect(() => {
-  async function fetchCompareStats() {
-    if (compareUser) {
-      const comparedUser = await getFortniteStats(compareUser);
-      if (comparedUser) {
-        setCompare(comparedUser);
-      }
-    }
-  }
-  fetchCompareStats();
-}, [compareUser]);
+
 
 useEffect(() => {
   if (!userData) return;
@@ -649,21 +500,9 @@ useEffect(() => {
   setKd(overall.kd);
   setMatches(overall.matches);
 
-  setKdData([
-    { name: "solo", kd: solo.kd },
-    { name: "duo", kd: duo.kd },
-    { name: "squad", kd: squad.kd }
-  ]);
-  setWinRateData([
-    { name: "solo", winrate: solo.winRate },
-    { name: "duo", winrate: duo.winRate },
-    { name: "squad", winrate: squad.winRate }
-  ]);
-  setWinData([
-    { name: "solo", wins: solo.wins },
-    { name: "duo", wins: duo.wins },
-    { name: "squad", wins: squad.wins }
-  ]);
+setKdData(MODES.map(mode => ({ name: mode, kd: stats[mode].kd })));
+setWinRateData(MODES.map(mode => ({ name: mode, winrate: stats[mode].winRate })));
+setWinData(MODES.map(mode => ({ name: mode, wins: stats[mode].wins })));
 }, [userData]);
 
 
@@ -682,12 +521,21 @@ useEffect(() => {
   const searchValue = formData.get('search');
   const isCompare = formData.get('compare') === 'on';
 
+   if (isCompare && searchValue === user) {
+    alert("Can't compare to self");
+    return;
+  }
+const result = await getFortniteStats(formData);
+if (!result) {
+    alert('Error fetching data. Please try again later.');
+    return;
+  }
   if (isCompare) {
-    setCompareUser(searchValue as string);
+    setCompareUser(result?.username);
+    setCompare(result);
   } else {
-    if (user !== searchValue) {
-      setUser(searchValue as string);
-    }
+    setUser(result.username);
+    setUserData(result);
   }
 }}
 >
