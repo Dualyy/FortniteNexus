@@ -199,3 +199,10 @@ h2 {
     font-size: 20rem;
     scale: 1.5;
 }
+
+.lastUpdate{
+    color: #afafaf;
+    font-size: 0.8rem;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
