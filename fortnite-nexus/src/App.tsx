@@ -186,76 +186,79 @@ function StatsItem(){
         </div></>)
 }
 
-function StatsItemWithCompare(){
-  return(<>
-  <div className="user1"> 
-    <div className='header-user-stat'>
-  <h3>{user}</h3>
-  <p className="lastUpdate"> ({new Date(userData?.lastModified).toString()}</p>
-  </div>
-  <div className='user-stats-info'>
-   <div className='stats-item' style={{
-    background: compare?.stats?.overall?.wins ?? 0 < getWins() ? "green" : "red"
-  }}>
-          <h4>Wins</h4>
-          <h3>{getWins()}</h3>
+function getStatBg(userValue: number, compareValue: number) {
+  if (userValue > compareValue) return "green";
+  if (userValue < compareValue) return "red";
+  return "gray"; // or leave as default
+}
+
+const statKeys = [
+  { key: "wins", label: "Wins" },
+  { key: "matches", label: "Matches played" },
+  { key: "kd", label: "K/D" },
+  { key: "winRate", label: "Win rate", format: (v: number) => v.toFixed(2) + "%" }
+];
+
+function StatsItemWithCompare() {
+  const userStats = {
+    wins: getWins() ?? 0,
+    matches: getMatches() ?? 0,
+    kd: typeof kd === "number" ? kd : parseFloat(getKd() ?? "0"),
+    winRate: parseFloat(getWinRate() ?? "0"),
+  };
+  const compareStats = {
+    wins: compare?.stats?.overall?.wins ?? 0,
+    matches: compare?.stats?.overall?.matches ?? 0,
+    kd: compare?.stats?.overall?.kd ?? 0,
+    winRate: compare?.stats?.overall?.winRate ?? 0,
+  };
+
+  return (
+    <div className="user1">
+      <div className="header-user-stat">
+        <h3>{user}</h3>
+        <p className="lastUpdate">
+          ({new Date(userData?.lastModified ?? "").toString()})
+        </p>
+      </div>
+      <div className="user-stats-info">
+        {statKeys.map(({ key, label, format }) => (
+          <div
+            key={key}
+            className="stats-item"
+            style={{
+              background: getStatBg(userStats[key], compareStats[key])
+            }}
+          >
+            <h4>{label}</h4>
+            <h3>{format ? format(userStats[key]) : userStats[key]}</h3>
           </div>
-        <div className='stats-item'>
-          <h4>Matches played</h4>
-          <h3>{getMatches()}</h3>
+        ))}
+      </div>
+      <div className="user2">
+        <div className="header-user-stat">
+          <h3>{compare?.username}</h3>
+          <p className="lastUpdate">
+            {new Date(compare?.lastModified ?? "").toString()}
+          </p>
         </div>
-        <div className='stats-item' style={{
-  background:
-    (compare?.stats?.overall?.kd ?? 0) < (typeof kd === "number" ? kd : parseFloat(getKd() ?? "0"))
-      ? "green"
-      : "red"
-}}>
-          <h4>K/D</h4>
-          <h3>{getKd()}</h3>
+        <div className="user-stats-info">
+          {statKeys.map(({ key, label, format }) => (
+            <div
+              key={key}
+              className="stats-item"
+              style={{
+                background: getStatBg(compareStats[key], userStats[key])
+              }}
+            >
+              <h4>{label}</h4>
+              <h3>{format ? format(compareStats[key]) : compareStats[key]}</h3>
+            </div>
+          ))}
         </div>
-        <div className='stats-item' style={{
-    background: (compare?.stats?.overall.winRate ?? 0) < parseFloat(getWinRate()) ? "green" : "red"
-  }}>
-          <h4>win rate</h4>
-          <h3>{parseInt(getWinRate()).toFixed(2)+ '%'}</h3>
-        </div>
-        </div>
-        <div className="user2"> 
-          <div className='header-user-stat'>
-  <h3>{compare.username}</h3>
-   <p className="lastUpdate">{new Date(compare.lastModified).toString()}</p>
-  </div>
-  <div className='user-stats-info'>
-   <div className='stats-item' style={{
-    background: (compare?.stats?.overall?.wins ?? 0) > (getWins() ?? 0) ? "green" : "red"
-  }}>
-          <h4>Wins</h4>
-          <h3>{compare?.stats?.overall?.wins}</h3>
-          </div>
-        <div className='stats-item' >
-          <h4>Matches played</h4>
-          <h3>{compare.stats.overall.matches}</h3>
-        </div>
-        <div className='stats-item' style={{
-    background: compare.stats.overall.kd > (getKd() ?? 0) ? "green" : "red"
-  }}>
-          <h4>K/D</h4>
-          <h3>{compare.stats.overall.kd}</h3>
-        </div>
-       <div
-  className='stats-item'
-  style={{
-    background: (compare.stats.overall.winRate) > (Number(getWinRate() ?? 0)) ? "green" : "red"
-  }}
->
-          <h4>win rate</h4>
-          <h3>{compare ? (compare.stats.overall.winRate.toFixed(2) + '%') : ''}</h3>
-        </div>
-        </div>
-        </div>
-        </div>
-        
-        </>)
+      </div>
+    </div>
+  );
 }
 
 type BarChartProps = {
