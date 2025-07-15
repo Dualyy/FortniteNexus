@@ -1,208 +1,94 @@
-.Main-container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-}
+:root {
+            --bg-base: #F7FAFC;
+            --bg-card: #FFFFFF;
+            --border-subtle: #E2E8F0;
+            --text-primary: #2B6CB0;
+            --text-success: #38A169;
+            --text-warning: #DD6B20;
+            --text-dark: #2D3748;
+            --text-soft: #718096;
+        }
 
-.main-page-header{
-    font-size: 5rem;
-    font-weight: bold;
-    color: #fff;
-    margin-bottom: 5px;
-    margin-top: 0px;
-}
-
-.searchInput {
-    background-color: #31363f;
-    width: 300px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    color: #fff;
-    margin-bottom: 30px;
-    margin-top: 30px;
-}
-
-p{
-    margin: 0;
-    padding: 0;
-}
-
-h2 {
-    font-size: 2rem;
-    color: #fff;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
 
 .profile-container {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-self: center;
-    align-content: center;
-    margin-bottom: 0;
-    background-color: #4b5361;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    min-width: 50vw;
-    box-shadow: #2a2b2b 1px 0px 15px 2px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  max-width: 300px;
+  min-width: 300px;
+  margin: 0 auto; /* Center horizontally */
 }
 
-.profile-image {
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    margin-right: 50px;
-    border-color: #43787b;
-    border-style: solid;
-    border-width: 6px;
+.paragraph {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; /* Center horizontally */
+  text-align: center;  /* Center text */
 }
 
-.profile-info{
-    max-width: fit-content;
-    align-content: center;
+.Main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; /* Center horizontally */
+  min-height: 100vh;   /* Center vertically if desired */
+  text-align: center;  /* Center text */
 }
 
-.profile-info h2 {
-    font-size: 2rem;
-    margin: 0;
-}
-.profile-avatar {
-    display: flex;
-    max-width: fit-content;
-    align-content: center;
-}
-
-.stats-container{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-}
-
-.stats-item{
-    flex-direction: row;
-    margin-top: 0;
-    text-align: center;
-    margin: 2rem;
-    background-color: #4b5361;
-    padding: 2rem;
-    border-radius: 0.5rem;
-    min-width: 8rem;
-    max-height: 5rem;
-    box-shadow: #2a2b2b 1px 0px 15px 2px;
-}
-
-.stats-item h4 {
-    font-weight: 900;
-    margin: 0;
-    padding: 0;
-    color: #afafaf;
-}
-
-.stats-item h3 {
-    font-size: 2rem;
-    font-weight: 900;
-    margin: 0;
-    padding: 0;
-}
-
-.stats-item-graph{
-    margin-top: 0;
-    text-align: center;
-    margin: 2rem;
-    background-color: #4b5361;
-    padding: 2rem;
-    border-radius: 0.5rem;
-    min-height: fit-content;
-    box-shadow: #2a2b2b 1px 0px 15px 2px;
-    font-family: 'Poppins', sans-serif;
-    color: #2a2b2b !important;
-    min-width: 300px;
-}
-
-.graphs{
-    display: flex;
-    min-width: 400px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-.profile-two{
-    margin-right:40px;
-    display: flex;
-    flex-wrap: wrap;
-    align-content: center;
-}
-
-.profile-one{
-    display: flex;
-    flex-wrap: wrap;
-    margin-left: 40px;
-    align-content: center;
-}
-
-.profile-info--right{
-    max-width: fit-content;
-    align-content: center;
-    margin-right: 40px;
-}
-.profile-info--left{
-    max-width: fit-content;
-    align-content: center;
-    margin-left: 40px;
-}
-
-.versus{
-    display: flex;
-    justify-content: center;
-    align-self: center;
-    margin-left: auto;
-    margin-right: auto;
+.versus {
     font-size: xx-large;
-    padding: 20px;
-}
-
-.user1{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.user2{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-wrap: normal;
-    
+    margin: 20px;
 }
 
 .user-stats-info{
     display: flex;
     flex-direction: row;
+    color: var(--text-dark);
+    margin: 20px;
 }
 
-.css-18dsvps-MuiChartsLegend-root{
-    color: white !important;
+.stats-item{
+    height: 100px;
+    width: 150px;
+    justify-content: center;
+    align-content: center;
+    margin: 10px;
 }
 
-.compare{
-    width: 30px;
-    font-size: 20rem;
-    scale: 1.5;
+.stats-item h4{
+   font-size: 1.2rem;
 }
 
-.lastUpdate{
-    color: #afafaf;
-    font-size: 0.8rem;
-    margin-top: 10px;
-    margin-bottom: 10px;
+.lastUpdate {
+    font-size: small;
+    color: var(--text-soft);
+}
+
+.main-page-header-container{
+    display:flex;
+    flex-direction: column;
+    height: 10vh;
+    margin-top: 50px;
+}
+
+.stats-item-container{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    color: var(--text-dark);
+    margin: 20px;
+}
+
+.stats-item-container h3{
+    color: var(--text-primary);
+    font-size: 1.5rem;
+}
+
+.stats-item-container h4{
+    color: var(--text-soft);
+    font-size: 0.9rem;
+    margin-bottom: 5px;
 }

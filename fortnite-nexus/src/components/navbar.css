@@ -3,17 +3,19 @@ h1{
 }
 
 .nexus {
-    color: #43787b;
+    color: #2B6CB0;
 }
 
 nav {
-    background-color: rgb(49, 54, 63);
+    background-color: rgb(255, 255, 255);
     width: 100vw;
     height: 80px;
     margin: 0;
     padding: 0;
     display: flex;
     align-items: center;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    color: #2B6CB0;
 }
 
 ul {
@@ -39,7 +41,7 @@ ul {
 
 nav a{
     text-decoration: none;
-    color: white;
+    color: #000000;
     font-weight: bold;
     align-self: center;
 }

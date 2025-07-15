@@ -1,13 +1,34 @@
 @import './components/navbar.css';
+:root {
+            --bg-base: #F7FAFC;
+            --bg-card: #FFFFFF;
+            --border-subtle: #E2E8F0;
+            --text-primary: #2B6CB0;
+            --text-success: #38A169;
+            --text-warning: #DD6B20;
+            --text-dark: #2D3748;
+            --text-soft: #718096;
+        }
 
-html, body, #root {
-  margin: 0;
-  padding: 0;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  background-color: #4b5361;
-  color: white;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-dark);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Merriweather', serif;
+        }
+
+        ul {
+            list-style: none;
+        }
 
  /* Keyframes for the pulsing animation */
         @keyframes pulse {
@@ -26,6 +47,7 @@ html, body, #root {
             border-radius: 0.75rem; /* Equivalent to rounded-xl */
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-lg */
             border: 1px solid #e5e7eb; /* Equivalent to border-gray-200 */
+            margin-bottom: 50px;
         }
 
         /* The container for the lines that has the animation */
@@ -44,15 +66,3 @@ html, body, #root {
         }
 
         /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #31363f; /* dark:bg-gray-900 */
-            }
-            .skeleton-card {
-                background-color: #31363f; /* dark:bg-gray-800 */
-                border-color: #374151; /* dark:border-gray-700 */
-            }
-            .skeleton-line {
-                background-color: #374151; /* dark:bg-gray-700 */
-            }
-        }

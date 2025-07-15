@@ -168,6 +168,11 @@ function getWinRate() {
 
 function StatsItem(){
   return (<>
+ <div className="skeleton-card">
+  <div className="header-user-stat">
+  <h2>Performance overview</h2>
+  </div>
+  <div className='stats-item-container'>
    <div className='stats-item'>
           <h4>Wins</h4>
           <h3>{getWins()}</h3>
@@ -183,7 +188,10 @@ function StatsItem(){
         <div className='stats-item'>
           <h4>win rate</h4>
           <h3>{getWinRate()}</h3>
-        </div></>)
+        </div>
+        </div>
+        </div>
+        </>)
 }
 
 function getStatBg(userValue: number, compareValue: number) {
@@ -214,26 +222,28 @@ function StatsItemWithCompare() {
   };
 
   return (
-    <div className="user1">
-      <div className="header-user-stat">
-        <h3>{user}</h3>
-        <p className="lastUpdate">
-          ({new Date(userData?.lastModified ?? "").toString()})
-        </p>
-      </div>
-      <div className="user-stats-info">
-        {statKeys.map(({ key, label, format }) => (
-          <div
-            key={key}
-            className="stats-item"
-            style={{
-              background: getStatBg(userStats[key], compareStats[key])
-            }}
-          >
-            <h4>{label}</h4>
-            <h3>{format ? format(userStats[key]) : userStats[key]}</h3>
-          </div>
-        ))}
+    <div className="skeleton-card stats-item-with-compare">
+      <div className="user1">
+        <div className="header-user-stat">
+          <h3>{user}</h3>
+          <p className="lastUpdate">
+            ({new Date(userData?.lastModified ?? "").toString()})
+          </p>
+        </div>
+        <div className="user-stats-info">
+          {statKeys.map(({ key, label, format }) => (
+            <div
+              key={key}
+              className="stats-item"
+              style={{
+                color: getStatBg(userStats[key], compareStats[key])
+              }}
+            >
+              <h4>{label}</h4>
+              <h3>{format ? format(userStats[key]) : userStats[key]}</h3>
+            </div>
+          ))}
+        </div>
       </div>
       <div className="user2">
         <div className="header-user-stat">
@@ -248,7 +258,7 @@ function StatsItemWithCompare() {
               key={key}
               className="stats-item"
               style={{
-                background: getStatBg(compareStats[key], userStats[key])
+                color: getStatBg(compareStats[key], userStats[key]) // <-- swapped order!
               }}
             >
               <h4>{label}</h4>
@@ -272,16 +282,16 @@ type BarChartProps = {
 }
 
 const barChartCSS ={
-  '.MuiChartsAxis-tickLabel': { fill: '#ffffff !important' },
-  '.MuiChartsAxis-label': { fill: '#ffffff !important' },
-  '.MuiChartsBar-label': { fill: '#ffffff !important' },
+  '.MuiChartsAxis-tickLabel': { fill: '#718096 !important' },
+  '.MuiChartsAxis-label': { fill: '#718096 !important' },
+  '.MuiChartsBar-label': { fill: '#718096 !important' },
   '.MuiChartsBar-bar:hover': { fill: '#82ca9d !important'},
-  '.MuiChartsAxis-line': { stroke: '#ffffff !important', strokeWidth: 1 },
-  '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
-  '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#ffffff !important'},
-  '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffffff !important'},}
+  '.MuiChartsAxis-line': { stroke: '#718096 !important', strokeWidth: 1 },
+  '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#718096 !important'},
+  '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#718096 !important'},
+  '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffff !important'},}
 
-  const colors = ['#43787b', '#82ca9d', '#ffc658']
+  const colors = ['#2B6CB0', '#1e4c7c', '#ffc658']
 
 function BarChartStats({
   
@@ -304,6 +314,7 @@ function BarChartStats({
     });
   }
   return (
+    
     <BarChart
       xAxis={[{ data: MODES }]}
       series={series}
@@ -330,6 +341,7 @@ function Profile(props: {whatUser: string, profileClass: string, orientation: st
     props.whatUserData?.battlePass?.progress ??
     "N/A";
   return (
+    <div className='skeleton-card profile-container'>
     <div className={`${props.profileClass}`}>
       <div className={`profile-avatar profile-info--${props.orientation}`}>
         <img
@@ -347,6 +359,7 @@ function Profile(props: {whatUser: string, profileClass: string, orientation: st
         <p>Progress: {progress}%</p>
       </div>
     </div>
+    </div>
   );
 }
 
@@ -359,7 +372,9 @@ function Versus(){
 
 function Graphs() {
   return (<>
+  <div className='skeleton-card graphs-container'>
   <div className='graphs'>
+    
         <div className='stats-item-graph'>
           <h2>K/D ratio</h2>
   <BarChartStats
@@ -382,6 +397,9 @@ function Graphs() {
   }
 />
 </div>
+</div>
+</div>
+<div className='skeleton-card'>
 <div className='stats-item-graph'>
   <h2>win rate %</h2>
   <BarChartStats
@@ -404,6 +422,8 @@ function Graphs() {
   }
 />
 </div>
+</div>
+<div className='skeleton-card'>
 <div className='stats-item-graph'>
   <h2>wins</h2>
   <BarChartStats
@@ -427,13 +447,13 @@ function Graphs() {
 />
 </div>
 </div>
+
   </>)
 }
 
 function Stats() {
   return(<>
 <div className='paragraph'>
-  <div className="skeleton-card">
     <div className='profile-container'> 
       <Profile whatUser={user} profileClass='profile-one' orientation='left' whatUserData={userData} />
       {compare? <Versus /> : ""}
@@ -446,10 +466,11 @@ function Stats() {
           <br/>
         <div className='stats-container'>
           {compare ? <StatsItemWithCompare /> : <StatsItem /> }
+
         <Graphs />        
         </div>
       </div>
-      </div>
+      
       </div>
   </>
   )}
@@ -515,6 +536,7 @@ setWinData(MODES.map(mode => ({ name: mode, wins: stats[mode].wins })));
   return (
     <>
     <div className="Main-container">
+      <div className="main-page-header-container">
       <h1 className='main-page-header'>Fortnite<span className='nexus'>Nexus</span></h1>
       <p>Get your Fortnite stats in one place!</p>
       <p>Search for your Fortnite stats by username.</p>
@@ -547,7 +569,7 @@ if (!result) {
   <input className='compare' type='checkbox' id="compare" name="compare"/>
   <label htmlFor="compare">Compare</label>
 </form>
-      
+      </div>
       { userData ? <Stats /> : <Skeleton /> }
       </div>
     </>
