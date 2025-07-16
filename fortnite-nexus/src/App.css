@@ -9,6 +9,17 @@
             --text-soft: #718096;
         }
 
+        .dark-mode {
+    --bg-base: #181A20;
+    --bg-card: #23262F;
+    --border-subtle: #353945;
+    --text-primary: #6C8AE4;
+    --text-success: #43D9AD;
+    --text-warning: #FFB86C;
+    --text-dark: #F7FAFC;
+    --text-soft: #A3A3A3;
+}
+
 
 .profile-container {
   display: flex;
