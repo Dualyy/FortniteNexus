@@ -1,0 +1,120 @@
+:root {
+            --bg-base: #F7FAFC;
+            --bg-card: #FFFFFF;
+            --border-subtle: #E2E8F0;
+            --text-primary: #2B6CB0;
+            --text-success: #38A169;
+            --text-warning: #DD6B20;
+            --text-dark: #2D3748;
+            --text-soft: #718096;
+        }
+
+.item-Image{
+    height: 200px;
+    background-color: var(--text-primary);
+    border-radius: 0.75rem;
+}
+
+.store-item-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    min-width: 50vw;
+    max-width: 1600px;
+    margin: 0 auto;
+    gap: 2rem;
+    padding: 30px;
+}
+
+.store-item{
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.75rem;
+    display: flex;
+    justify-self: center;
+    justify-items: center;
+    justify-content: center;
+    align-items: center; /* Add this line */
+    flex-direction: column;
+    min-width: 350px;
+    min-height: 350px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 0;
+}
+
+.store-item h2{
+    align-self: center;
+    margin-bottom: 1rem;
+}
+
+.store-item p{
+    align-self: center;
+    margin-right: 5px;
+}
+
+.store-header{
+    display: flex;
+    justify-content: center;
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+    font-size: x-large;
+}
+
+.store-item span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.store-skeleton{
+       display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    min-width: 50vw;
+    max-width: 1600px;
+    margin: 0 auto;
+    gap: 2rem;
+    padding: 30px;
+}
+
+.skeleton-store-item {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.75rem;
+    min-width: 350px;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    animation: pulse 1.5s infinite;
+}
+
+.skeleton-image {
+    width: 90%;
+    height: 200px;
+    background: #e2e8f0;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.skeleton-text {
+    width: 70%;
+    height: 24px;
+    background: #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+}
+
+.skeleton-price {
+    width: 40%;
+    height: 20px;
+    background: #e2e8f0;
+    border-radius: 8px;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}

@@ -15,7 +15,7 @@ console.log("Server configuration:", server.API_KEY);
 function App() {
 
 const [userData, setUserData] = useState<UserDataType | null>(null);
-const [user, setUser] = useState("exiira.x3"); // Default username for userDataing
+const [user, setUser] = useState(null); // Default username for userDataing
 const [wins, setWins] = useState(0);
 const [matches, setMatches] = useState(0);
 const [kd, setKd] = useState(0);
@@ -451,9 +451,10 @@ function Graphs() {
   </>)
 }
 
-function Stats() {
+
+function  Test() {
   return(<>
-<div className='paragraph'>
+  <div className='paragraph'>
     <div className='profile-container'> 
       <Profile whatUser={user} profileClass='profile-one' orientation='left' whatUserData={userData} />
       {compare? <Versus /> : ""}
@@ -472,6 +473,12 @@ function Stats() {
       </div>
       
       </div>
+  </>)
+}
+
+function Stats() {
+  return(<>
+{ userData ? <Test/> : ""}
   </>
   )}
       
@@ -570,7 +577,7 @@ if (!result) {
   <label htmlFor="compare">Compare</label>
 </form>
       </div>
-      { userData ? <Stats /> : <Skeleton /> }
+      { userData && <Stats /> }
       </div>
     </>
   )
