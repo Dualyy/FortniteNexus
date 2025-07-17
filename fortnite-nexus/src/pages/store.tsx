@@ -17,11 +17,6 @@ function fetchStoreData(){
   }
 }
 
-
-
-
-
-
 function mapStoreData(storeData) {
   if (!storeData){
     return [];
@@ -39,19 +34,14 @@ function StoreSkeleton() {
     <div className="store-item-container">
       {[...Array(20)].map((_, idx) => (
         <div className="skeleton-store-item" key={idx}>
-          <div className="skeleton-image"></div>
           <div className="skeleton-text"></div>
+          <div className="skeleton-image"></div>
           <div className="skeleton-price"></div>
         </div>
       ))}
     </div>
   );
 }
-
-
-
-
-
 
 
 export function Store() {

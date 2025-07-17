@@ -68,7 +68,7 @@
 }
 
 .store-skeleton{
-       display: grid;
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     min-width: 50vw;
     max-width: 1600px;
