@@ -113,6 +113,16 @@
     border-radius: 8px;
 }
 
+.shop-category{
+    display: flex;
+    margin-left: 6rem;
+    font-size: xx-large;
+}
+
+.category-container {
+    margin-bottom: 2rem;
+}
+
 @keyframes pulse {
     0% { opacity: 1; }
     50% { opacity: 0.5; }
