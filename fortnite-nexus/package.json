@@ -18,6 +18,7 @@
     "dotenv": "^16.6.0",
     "express": "^5.1.0",
     "fnapicom": "^2.1.0",
+    "nanoid": "^5.1.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.6.2"

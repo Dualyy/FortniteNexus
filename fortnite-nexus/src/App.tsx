@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css'
 import axios from 'axios';
 import { BarChart} from '@mui/x-charts/BarChart';
+import {nanoid} from 'nanoid';
 
 // Define the server configuration
 // This will read from the .env file in the root directory
@@ -326,12 +327,32 @@ function BarChartStats({
   );
 }
 
+function deleteUser() {
+  if(compareUser){
+    setUserData(compare);
+    setUser(compareUser);
+    setCompare(null);
+    setCompareUser("")
+  } else{
+    setUserData(null);
+    setUser("");
+  }
+  
+}
+
+function deleteCompareUser() {
+  setCompare(null);
+  setCompareUser("");
+}
 
 
 
 
-
-function Profile(props: {whatUser: string, profileClass: string, orientation: string, whatUserData: UserDataType | null}) {
+function Profile(props: {onDelete: () => void , id: string,
+   whatUser: string,
+    profileClass: string,
+     orientation: string,
+      whatUserData: UserDataType | null}) {
   const level =
     props.whatUserData?.data?.battlePass.level ??
     props.whatUserData?.battlePass?.level ??
@@ -357,6 +378,7 @@ function Profile(props: {whatUser: string, profileClass: string, orientation: st
         <hr />
         <p>Level: {level}</p>
         <p>Progress: {progress}%</p>
+        <button id={props.id} onClick={() => props.onDelete() }>Delete</button>
       </div>
     </div>
     </div>
@@ -456,11 +478,11 @@ function  Test() {
   return(<>
   <div className='paragraph'>
     <div className='profile-container'> 
-      <Profile whatUser={user} profileClass='profile-one' orientation='left' whatUserData={userData} />
+      <Profile onDelete={deleteUser} whatUser={user} profileClass='profile-one' orientation='left' whatUserData={userData} id={nanoid()} />
       {compare? <Versus /> : ""}
 
     {/* User 2 after select */}
-    { compare ? <Profile whatUser={compareUser} profileClass ='profile-two' orientation='right' whatUserData={compare} /> : ""}
+    { compare ? <Profile onDelete={deleteCompareUser} whatUser={compareUser} profileClass ='profile-two' orientation='right' whatUserData={compare} id={nanoid()} /> : ""}
     
     </div>
         <div>
