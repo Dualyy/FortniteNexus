@@ -20,6 +20,14 @@
     --text-soft: #A3A3A3;
 }
 
+.delete-button {
+    background-color: transparent;
+    color: var(--text-warning);
+    border: none;
+    cursor: pointer;
+    margin: 20px;
+
+}
 
 .profile-container {
   display: flex;

@@ -11,17 +11,18 @@ const server = {
   BASE_URL: 'https://fortnite-api.com/v2/stats/br/v2'
 };
 
-console.log("Server configuration:", server.API_KEY);
-
 function App() {
 
-const [userData, setUserData] = useState<UserDataType | null>(null);
+const [userData, setUserData] = useState<UserDataType | "">(null);
 const [user, setUser] = useState(null); // Default username for userDataing
 const [wins, setWins] = useState(0);
 const [matches, setMatches] = useState(0);
 const [kd, setKd] = useState(0);
 
 type UserDataType = {
+  username: string;
+  lastModified?: string;
+  raw?: object; // Raw data from the API, can be used for debugging or further
   data?: {
     stats: {
       all: {
@@ -212,7 +213,7 @@ function StatsItemWithCompare() {
   const userStats = {
     wins: getWins() ?? 0,
     matches: getMatches() ?? 0,
-    kd: typeof kd === "number" ? kd : parseFloat(getKd() ?? "0"),
+    kd: typeof kd === "number" ? kd : getKd() ?? 0,
     winRate: parseFloat(getWinRate() ?? "0"),
   };
   const compareStats = {
@@ -378,7 +379,7 @@ function Profile(props: {onDelete: () => void , id: string,
         <hr />
         <p>Level: {level}</p>
         <p>Progress: {progress}%</p>
-        <button id={props.id} onClick={() => props.onDelete() }>Delete</button>
+        <button className={'delete-button'} id={props.id} onClick={() => props.onDelete() }>Delete</button>
       </div>
     </div>
     </div>
@@ -411,9 +412,9 @@ function Graphs() {
   compareData={
     compare
       ? {
-          solo: compare.stats.solo.kd,
-          duo: compare.stats.duo.kd,
-          squad: compare.stats.squad.kd,
+          solo: compare.stats?.solo.kd,
+          duo: compare.stats?.duo.kd,
+          squad: compare.stats?.squad.kd,
         }
       : undefined
   }
@@ -475,12 +476,12 @@ function Graphs() {
 
 
 function  Test() {
+  if(user)
   return(<>
   <div className='paragraph'>
     <div className='profile-container'> 
       <Profile onDelete={deleteUser} whatUser={user} profileClass='profile-one' orientation='left' whatUserData={userData} id={nanoid()} />
       {compare? <Versus /> : ""}
-
     {/* User 2 after select */}
     { compare ? <Profile onDelete={deleteCompareUser} whatUser={compareUser} profileClass ='profile-two' orientation='right' whatUserData={compare} id={nanoid()} /> : ""}
     
@@ -527,18 +528,7 @@ function Skeleton() {
 
 
 
-useEffect(() => {
-  async function fetchUserStats() {
-    if (userData) {
-        console.log(user)
-        setWins(userData.stats.wins);
-        setKd(userData.stats.kd);
-        setMatches(userData.stats.matches);
-      
-    }
-  }
-  fetchUserStats();
-}, [user]);
+
 
 
 
