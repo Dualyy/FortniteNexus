@@ -3,23 +3,35 @@ import './App.css'
 import axios from 'axios';
 import { BarChart} from '@mui/x-charts/BarChart';
 import {nanoid} from 'nanoid';
+import { useTheme } from './ThemeContext';
+import { get } from 'http';
 
 // Define the server configuration
 // This will read from the .env file in the root directory
 const server = {
   API_KEY: import.meta.env.VITE_API_KEY, // Use the environment variable or fallback to a default value
-  BASE_URL: 'https://fortnite-api.com/v2/stats/br/v2'
+  BASE_URL: 'https://fortnite-api.com/v2/stats/br/v2',
+  SHOP_URL: `https://fortnite-api.com/v2/shop`,
+  COSMETICS_URL: `https://fortnite-api.com/v2/cosmetics/br/`
 };
+
+
 
 function App() {
 
-const [userData, setUserData] = useState<UserDataType | "">(null);
+const { isDarkMode } = useTheme();
+
+const [userData, setUserData] = useState<UserDataType | "null">(null);
 const [user, setUser] = useState(null); // Default username for userDataing
 const [wins, setWins] = useState(0);
 const [matches, setMatches] = useState(0);
 const [kd, setKd] = useState(0);
+const[profileImages, setProfileImages] = useState<string[]>([]);
+const [profileImageOne,setProfileImageOne] = useState({loaded: false, image:""})
+const [profileImageTwo,setProfileImageTwo] = useState({loaded: false, image:""})
 
 type UserDataType = {
+  image: string
   username: string;
   lastModified?: string;
   raw?: object; // Raw data from the API, can be used for debugging or further
@@ -291,7 +303,8 @@ const barChartCSS ={
   '.MuiChartsAxis-line': { stroke: '#718096 !important', strokeWidth: 1 },
   '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#718096 !important'},
   '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#718096 !important'},
-  '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffff !important'},}
+  '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffff !important'},
+'.css-18dsvps-MuiChartsLegend-root': {color: `${isDarkMode ? '#F7FAFC' : '#718096'}`}}
 
   const colors = ['#2B6CB0', '#1e4c7c', '#ffc658']
 
@@ -349,6 +362,8 @@ function deleteCompareUser() {
 
 
 
+
+
 function Profile(props: {onDelete: () => void , id: string,
    whatUser: string,
     profileClass: string,
@@ -362,19 +377,21 @@ function Profile(props: {onDelete: () => void , id: string,
     props.whatUserData?.data?.battlePass.progress ??
     props.whatUserData?.battlePass?.progress ??
     "N/A";
+
+ 
+
+
   return (
-    <div className='skeleton-card profile-container'>
+    <div className={`skeleton-card profile-container ${isDarkMode ? 'dark-mode' : ''}`}>
     <div className={`${props.profileClass}`}>
-      <div className={`profile-avatar profile-info--${props.orientation}`}>
+      <div className={`profile-avatar profile-info--${props.orientation} ${isDarkMode ? 'dark-mode' : ''}`}>
         <img
           className="profile-image"
-          src={
-            "https://fortnite-api.com/images/cosmetics/br/cid_a_063_athena_commando_f_cottoncandy/variants/material/mat1.png"
-          }
+          src={props.profileClass === 'profile-one' ? profileImageOne.image : profileImageTwo.image}
           alt="Profile"
         />
       </div>
-      <div className="profile-info">
+      <div className={`profile-info ${isDarkMode ? 'dark-mode' : ''}`}>
         <h2>{props.whatUser}</h2>
         <hr />
         <p>Level: {level}</p>
@@ -422,7 +439,7 @@ function Graphs() {
 </div>
 </div>
 </div>
-<div className='skeleton-card'>
+<div className={`skeleton-card ${isDarkMode ? 'dark-mode' : ''}`}>
 <div className='stats-item-graph'>
   <h2>win rate %</h2>
   <BarChartStats
@@ -478,6 +495,7 @@ function Graphs() {
 function  Test() {
   if(user)
   return(<>
+  <div className={`container ${isDarkMode ? 'dark-mode' : ''}`}>
   <div className='paragraph'>
     <div className='profile-container'> 
       <Profile onDelete={deleteUser} whatUser={user} profileClass='profile-one' orientation='left' whatUserData={userData} id={nanoid()} />
@@ -495,6 +513,7 @@ function  Test() {
         </div>
       </div>
       
+      </div>
       </div>
   </>)
 }
@@ -551,15 +570,40 @@ setWinRateData(MODES.map(mode => ({ name: mode, winrate: stats[mode].winRate }))
 setWinData(MODES.map(mode => ({ name: mode, wins: stats[mode].wins })));
 }, [userData]);
 
+useEffect(() =>  {
+  async function getProfileImages(){
+    try{
+      const response = await axios.get(`${server.COSMETICS_URL}`);
+      const cosmetics = response.data.data.filter((skin: any) => skin.type.value === "outfit")
+      const images = cosmetics.map((skin: any) => skin.images.icon);
+      
+      return images;
+    }catch(error){
+      console.error(error)
+    }
+  }
+  
+  getProfileImages().then(images => setProfileImages(images))
+ },[])
 
+ useEffect(() =>{
+   if(profileImageOne.loaded === false && profileImages.length > 0) {
+    setProfileImageOne(() => ({loaded: true, image:profileImages[Math.floor(Math.random() * profileImages.length)]}))
+  }
+  if(profileImageTwo.loaded === false &&  profileImages.length > 0) {
+    setProfileImageTwo(() => ({loaded: true, image:profileImages[Math.floor(Math.random() * profileImages.length)]}))
+  }
+ },[profileImages])
+
+console.log(profileImageOne)
   return (
     <>
-    <div className="Main-container">
-      <div className="main-page-header-container">
-      <h1 className='main-page-header'>Fortnite<span className='nexus'>Nexus</span></h1>
+    <div className={`Main-container ${isDarkMode ? 'dark-mode' : ''}`}>
+      <div className={'main-page-header-container'}>
+      <h1 className={'main-page-header'}>Fortnite<span className={'nexus'}>Nexus</span></h1>
       <p>Get your Fortnite stats in one place!</p>
       <p>Search for your Fortnite stats by username.</p>
-    <form
+    <form 
   onSubmit={async (e) => {
   e.preventDefault();
   const formData = new FormData(e.target as HTMLFormElement);
@@ -584,7 +628,7 @@ if (!result) {
   }
 }}
 >
-  <input className='searchInput' type="text" placeholder="Search.." name="search"/>
+  <input className={`searchInput ${isDarkMode ? 'dark-mode' : ''}`} type="text" placeholder="Search.." name="search"/>
   <input className='compare' type='checkbox' id="compare" name="compare"/>
   <label htmlFor="compare">Compare</label>
 </form>

@@ -42,7 +42,7 @@
             width: 100%;
             min-width: fit-content;
             max-width: 70vw; /* Equivalent to max-w-md */
-            background-color: #ffffff; /* Equivalent to bg-white */
+            
             padding: 1.5rem; /* Equivalent to p-6 */
             border-radius: 0.75rem; /* Equivalent to rounded-xl */
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); /* Equivalent to shadow-lg */

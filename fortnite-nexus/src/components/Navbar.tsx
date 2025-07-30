@@ -1,12 +1,11 @@
 import {Link} from 'react-router-dom';
-import { useState } from 'react';
-
-
+import { useTheme } from '../ThemeContext';
 
 export default function Navbar() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+const { isDarkMode, toggleDarkMode } = useTheme();
+
   return (
-    <nav>
+    <nav className={`navbar ${isDarkMode ? 'dark-mode' : ''}`}>
       <ul>
         <li>
           <Link to="/"><h1>Fortnite<span className="nexus">Nexus</span></h1></Link>
@@ -19,7 +18,7 @@ export default function Navbar() {
           <Link to ="/store">Store</Link>
         </li>
         <li className="right-nav">
-          <button onClick={() => setIsDarkMode(!isDarkMode)}>
+          <button onClick={toggleDarkMode}>
             {isDarkMode ? 'Light Mode' : 'Dark Mode'}
           </button>
           </li>
