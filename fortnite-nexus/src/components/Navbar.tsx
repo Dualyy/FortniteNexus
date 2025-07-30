@@ -18,8 +18,8 @@ const { isDarkMode, toggleDarkMode } = useTheme();
           <Link to ="/store">Store</Link>
         </li>
         <li className="right-nav">
-          <button onClick={toggleDarkMode}>
-            {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+          <button className='button-mode' onClick={toggleDarkMode}>
+            {isDarkMode ? '🌞' : ' 🌙'}
           </button>
           </li>
         </div>
