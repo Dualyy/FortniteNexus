@@ -16,22 +16,33 @@ const server = {
 };
 
 
-
 function App() {
 
 const { isDarkMode } = useTheme();
-
-const [userData, setUserData] = useState<UserDataType | "null">(null);
+const [userData, setUserData] = useState<UserDataType | null>(null);
 const [user, setUser] = useState(null); // Default username for userDataing
 const [wins, setWins] = useState(0);
 const [matches, setMatches] = useState(0);
 const [kd, setKd] = useState(0);
 const[profileImages, setProfileImages] = useState<string[]>([]);
-const [profileImageOne,setProfileImageOne] = useState({loaded: false, image:""})
-const [profileImageTwo,setProfileImageTwo] = useState({loaded: false, image:""})
+const [compare, setCompare] = useState<UserDataType | null>(null);
+const [compareUser, setCompareUser] = useState(""); // Default username for comparison
+const MODES = ["solo", "duo", "squad"] as const;
+const [kdData, setKdData] = useState(
+  MODES.map(name => ({ name, kd: 0 }))
+);
 
+const [winrateData, setWinRateData] = useState(
+  MODES.map(name => ({ name, winrate: 0 }))
+);
+
+const [winData, setWinData] = useState(
+  MODES.map(name => ({ name, wins: 0 }))
+);
+
+//types
 type UserDataType = {
-  image: string
+  image: string;
   username: string;
   lastModified?: string;
   raw?: object; // Raw data from the API, can be used for debugging or further
@@ -97,27 +108,15 @@ type UserDataType = {
 
 };
 
-
-
-
-const [compare, setCompare] = useState<UserDataType | null>(null);
-const [compareUser, setCompareUser] = useState(""); // Default username for comparison
-
-// console.log(compareUserData)
-
-const MODES = ["solo", "duo", "squad"] as const;
-
-const [kdData, setKdData] = useState(
-  MODES.map(name => ({ name, kd: 0 }))
-);
-
-const [winrateData, setWinRateData] = useState(
-  MODES.map(name => ({ name, winrate: 0 }))
-);
-
-const [winData, setWinData] = useState(
-  MODES.map(name => ({ name, wins: 0 }))
-);
+type BarChartProps = {
+  user: string;
+  userData: { solo: number; duo: number; squad: number };
+  compareUser?: string;
+  compareData?: { solo: number; duo: number; squad: number };
+  label?: string;
+  color?: string[];
+  sx?: React.CSSProperties;
+}
 
  async function getFortniteStats(searchParam :string | FormData) {
 
@@ -154,7 +153,7 @@ const [winData, setWinData] = useState(
   
 }
 
-
+//functions
 function getWins() {
   if (userData) {
     return wins;
@@ -272,7 +271,7 @@ function StatsItemWithCompare() {
               key={key}
               className="stats-item"
               style={{
-                color: getStatBg(compareStats[key], userStats[key]) // <-- swapped order!
+                color: getStatBg(compareStats[key], userStats[key])
               }}
             >
               <h4>{label}</h4>
@@ -283,16 +282,6 @@ function StatsItemWithCompare() {
       </div>
     </div>
   );
-}
-
-type BarChartProps = {
-  user: string;
-  userData: { solo: number; duo: number; squad: number };
-  compareUser?: string;
-  compareData?: { solo: number; duo: number; squad: number };
-  label?: string;
-  color?: string[];
-  sx?: React.CSSProperties;
 }
 
 const barChartCSS ={
@@ -359,11 +348,6 @@ function deleteCompareUser() {
   setCompareUser("");
 }
 
-
-
-
-
-
 function Profile(props: {onDelete: () => void , id: string,
    whatUser: string,
     profileClass: string,
@@ -378,16 +362,13 @@ function Profile(props: {onDelete: () => void , id: string,
     props.whatUserData?.battlePass?.progress ??
     "N/A";
 
- 
-
-
   return (
     <div className={`skeleton-card profile-container ${isDarkMode ? 'dark-mode' : ''}`}>
     <div className={`${props.profileClass}`}>
       <div className={`profile-avatar profile-info--${props.orientation} ${isDarkMode ? 'dark-mode' : ''}`}>
         <img
           className="profile-image"
-          src={props.profileClass === 'profile-one' ? profileImageOne.image : profileImageTwo.image}
+          src={props.whatUserData?.image}
           alt="Profile"
         />
       </div>
@@ -491,7 +472,6 @@ function Graphs() {
   </>)
 }
 
-
 function  Test() {
   if(user)
   return(<>
@@ -524,7 +504,6 @@ function Stats() {
   </>
   )}
       
-
 function Skeleton() {
   return (<>
    <div className="skeleton-card">
@@ -543,31 +522,22 @@ function Skeleton() {
     </div>
   </>)
 }
-
-
-
-
-
-
-
-
+//UseEffects
 useEffect(() => {
-  if (!userData) return;
+  if (!userData || !userData.stats) return;
 
   // Prefer the .data.stats.all structure if present, else fallback
   const stats = userData.data?.stats?.all || userData.stats;
-  const solo = stats.solo;
-  const duo = stats.duo;
-  const squad = stats.squad;
   const overall = stats.overall;
 
   setWins(overall.wins);
   setKd(overall.kd);
   setMatches(overall.matches);
 
-setKdData(MODES.map(mode => ({ name: mode, kd: stats[mode].kd })));
-setWinRateData(MODES.map(mode => ({ name: mode, winrate: stats[mode].winRate })));
-setWinData(MODES.map(mode => ({ name: mode, wins: stats[mode].wins })));
+  setKdData(MODES.map(mode => ({ name: mode, kd: stats[mode]?.kd ?? 0 })));
+  setWinRateData(MODES.map(mode => ({ name: mode, winrate: stats[mode]?.winRate ?? 0 })));
+  setWinData(MODES.map(mode => ({ name: mode, wins: stats[mode]?.wins ?? 0 })));
+
 }, [userData]);
 
 useEffect(() =>  {
@@ -580,22 +550,47 @@ useEffect(() =>  {
       return images;
     }catch(error){
       console.error(error)
+      return [];
     }
   }
   
   getProfileImages().then(images => setProfileImages(images))
  },[])
 
- useEffect(() =>{
-   if(profileImageOne.loaded === false && profileImages.length > 0) {
-    setProfileImageOne(() => ({loaded: true, image:profileImages[Math.floor(Math.random() * profileImages.length)]}))
+ // Assigns a profile image to the main user when they are first loaded.
+ useEffect(() => {
+  if (userData && !userData.image && profileImages.length > 0) {
+    const randomImage = profileImages[Math.floor(Math.random() * profileImages.length)];
+    setUserData((prev) => (prev ? { ...prev, image: randomImage } : null));
   }
-  if(profileImageTwo.loaded === false &&  profileImages.length > 0) {
-    setProfileImageTwo(() => ({loaded: true, image:profileImages[Math.floor(Math.random() * profileImages.length)]}))
-  }
- },[profileImages])
+ }, [userData, profileImages]);
 
-console.log(profileImageOne)
+ useEffect(() => {
+  // Assigns a profile image to the comparison user when they are first loaded.
+  if (compare && !compare.image && profileImages.length > 0) {
+    const randomImage = profileImages[Math.floor(Math.random() * profileImages.length)];
+    setCompare((prev) => (prev ? { ...prev, image: randomImage } : null));
+  }
+ }, [compare, profileImages]);
+
+ useEffect(() => {
+  // This effect ensures that the two profile images are never the same.
+  // If a clash is detected, it re-rolls the image for the 'compare' user.
+  if (
+    userData?.image &&
+    compare?.image &&
+    userData.image === compare.image &&
+    profileImages.length > 1
+  ) {
+    let newImage;
+    do {
+      newImage = profileImages[Math.floor(Math.random() * profileImages.length)];
+    } while (newImage === userData.image); // Keep re-rolling until it's different
+    setCompare((prev) => (prev ? { ...prev, image: newImage } : null));
+  }
+ }, [userData?.image, compare?.image, profileImages]);
+
+
   return (
     <>
     <div className={`Main-container ${isDarkMode ? 'dark-mode' : ''}`}>
