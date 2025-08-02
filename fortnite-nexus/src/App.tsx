@@ -293,9 +293,10 @@ const barChartCSS ={
   '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#718096 !important'},
   '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#718096 !important'},
   '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffff !important'},
-'.css-18dsvps-MuiChartsLegend-root': {color: `${isDarkMode ? '#F7FAFC' : '#718096'}`}}
+  '.css-18dsvps-MuiChartsLegend-root': {color: `${isDarkMode ? '#F7FAFC' : '#718096'}`}
+}
 
-  const colors = ['#2B6CB0', '#1e4c7c', '#ffc658']
+const colors = ['#2B6CB0', '#1e4c7c', '#ffc658']
 
 function BarChartStats({
   
