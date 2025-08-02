@@ -472,7 +472,7 @@ function Graphs() {
   </>)
 }
 
-function  Test() {
+function  PlayerOverview() {
   if(user)
   return(<>
   <div className={`container ${isDarkMode ? 'dark-mode' : ''}`}>
@@ -500,28 +500,11 @@ function  Test() {
 
 function Stats() {
   return(<>
-{ userData ? <Test/> : ""}
+{ userData ? <PlayerOverview/> : ""}
   </>
   )}
       
-function Skeleton() {
-  return (<>
-   <div className="skeleton-card">
-        <div className="skeleton-loader">
-            <div className="skeleton-line" style={{width: "75%"}}></div>
-            <div className="skeleton-line" style={{width: "75%"}}></div>
-            <br/>
-            <div className="skeleton-line" style={{width: "66.666%"}}></div>
-            <br/>
-            <div className="skeleton-line" style={{width: "50%"}}></div>
-            <br/>
-            <div className="skeleton-line" style={{width: "50%"}}></div>
-            <br/>
-            <div className="skeleton-line" style={{width: "50%"}}></div>
-        </div>
-    </div>
-  </>)
-}
+
 //UseEffects
 useEffect(() => {
   if (!userData || !userData.stats) return;
