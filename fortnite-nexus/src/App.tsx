@@ -504,8 +504,7 @@ function Stats() {
 { userData ? <PlayerOverview/> : ""}
   </>
   )}
-      
-
+  
 //UseEffects
 useEffect(() => {
   if (!userData || !userData.stats) return;
