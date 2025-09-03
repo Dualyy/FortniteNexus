@@ -4,10 +4,35 @@ import axios from 'axios';
 import { BarChart} from '@mui/x-charts/BarChart';
 import {nanoid} from 'nanoid';
 import { useTheme } from './ThemeContext';
-import { get } from 'http';
 
-import{ UserDataType } from './types/UserDataType';
+// import{ UserDataType } from './types/UserDataType'; // Type definition is now in this file.
 import { BarChartProps } from './types/BarChartProps';
+
+// Define the types for the Fortnite stats data
+interface StatsDetail {
+  wins: number;
+  matches: number;
+  kills: number;
+  kd: number;
+  winRate: number;
+  lastModified: string;
+}
+
+interface AllStats {
+  overall: StatsDetail;
+  solo: StatsDetail;
+  duo: StatsDetail;
+  squad: StatsDetail;
+  ltm: StatsDetail;
+}
+
+interface UserDataType {
+  username: string;
+  battlePass: { level: number; progress: number; };
+  image: string | null;
+  stats: AllStats;
+  lastModified: string;
+}
 
 // Define the server configuration
 // This will read from the .env file in the root directory
@@ -23,7 +48,7 @@ function App() {
 
 const { isDarkMode } = useTheme();
 const [userData, setUserData] = useState<UserDataType | null>(null);
-const [user, setUser] = useState(null); // Default username for userData
+const [user, setUser] = useState(""); // Default username for userData
 const [wins, setWins] = useState(0);
 const [matches, setMatches] = useState(0);
 const [kd, setKd] = useState(0);
@@ -44,7 +69,7 @@ const [winData, setWinData] = useState(
 );
 
 //TODO: add PSN and XBOX support
- async function getFortniteStats(searchParam :string | FormData) {
+ async function getFortniteStats(searchParam :string | FormData): Promise<UserDataType | null> {
 
   
   let username: string | FormDataEntryValue;
@@ -65,12 +90,13 @@ const [winData, setWinData] = useState(
   if( response.status !== 200 || !response.data || response.data.error) {
     return null;
   }
+  const { battlePass, image, stats } = response.data.data;
    // Return all relevant data for the caller to handle
     return {
-      username,
-      stats: response.data.data.stats.all,
-      battlePass: response.data.data.battlePass,
-      raw: response.data,
+      username: username as string,
+      battlePass,
+      image,
+      stats: stats.all,
       lastModified: response.data.data.stats.all.overall.lastModified
     };
   } catch (error) {
@@ -150,7 +176,7 @@ function StatsItemWithCompare() {
   const userStats = {
     wins: getWins() ?? 0,
     matches: getMatches() ?? 0,
-    kd: typeof kd === "number" ? kd : getKd() ?? 0,
+    kd: kd,
     winRate: parseFloat(getWinRate() ?? "0"),
   };
   const compareStats = {
@@ -278,16 +304,9 @@ function deleteCompareUser() {
 function Profile(props: {onDelete: () => void , id: string,
    whatUser: string,
     profileClass: string,
-     orientation: string,
-      whatUserData: UserDataType | null}) {
-  const level =
-    props.whatUserData?.data?.battlePass.level ??
-    props.whatUserData?.battlePass?.level ??
-    "N/A";
-  const progress =
-    props.whatUserData?.data?.battlePass.progress ??
-    props.whatUserData?.battlePass?.progress ??
-    "N/A";
+     orientation: string, whatUserData: UserDataType | null}) {
+  const level = props.whatUserData?.battlePass?.level ?? "N/A";
+  const progress = props.whatUserData?.battlePass?.progress ?? "N/A";
 
   return (
     <div className={`skeleton-card profile-container ${isDarkMode ? 'dark-mode' : ''}`}>
@@ -337,9 +356,9 @@ function Graphs() {
   compareData={
     compare
       ? {
-          solo: compare.stats?.solo.kd,
-          duo: compare.stats?.duo.kd,
-          squad: compare.stats?.squad.kd,
+          solo: compare.stats.solo?.kd ?? 0,
+          duo: compare.stats.duo?.kd ?? 0,
+          squad: compare.stats.squad?.kd ?? 0,
         }
       : undefined
   }
@@ -362,9 +381,9 @@ function Graphs() {
   compareData={
     compare
       ? {
-          solo: compare.stats.solo.winRate,
-          duo: compare.stats.duo.winRate,
-          squad: compare.stats.squad.winRate,
+          solo: compare.stats.solo?.winRate ?? 0,
+          duo: compare.stats.duo?.winRate ?? 0,
+          squad: compare.stats.squad?.winRate ?? 0,
         }
       : undefined
   }
@@ -386,9 +405,9 @@ function Graphs() {
   compareData={
     compare
       ? {
-          solo: compare.stats.solo.wins,
-          duo: compare.stats.duo.wins,
-          squad: compare.stats.squad.wins,
+          solo: compare.stats.solo?.wins ?? 0,
+          duo: compare.stats.duo?.wins ?? 0,
+          squad: compare.stats.squad?.wins ?? 0,
         }
       : undefined
   }
@@ -435,8 +454,7 @@ function Stats() {
 useEffect(() => {
   if (!userData || !userData.stats) return;
 
-  // Prefer the .data.stats.all structure if present, else fallback
-  const stats = userData.data?.stats?.all || userData.stats;
+  const stats = userData.stats;
   const overall = stats.overall;
 
   setWins(overall.wins);
@@ -519,7 +537,7 @@ useEffect(() =>  {
     return;
   }
 const result = await getFortniteStats(formData);
-if (!result) {
+  if (!result) {
     alert('Error fetching data. Please try again later.');
     return;
   }

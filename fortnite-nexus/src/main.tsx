@@ -1,5 +1,6 @@
 
-import { createRoot } from 'react-dom/client'
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 import './index.css'
 import App from './App.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
@@ -7,7 +8,7 @@ import { Overview } from './pages/user/overview.tsx'
 import { Store } from './pages/store.tsx'
 import Navbar from './components/Navbar.tsx'
 import { ThemeProvider, useTheme } from './ThemeContext.tsx'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect } from 'react';
 
 /**
  * A component that listens to the theme context and applies the
@@ -29,20 +30,20 @@ function ThemeManager({ children }: { children: ReactNode }) {
 }
 
 createRoot(document.getElementById('root')!).render(
-  <>
-  <ThemeProvider>
-    <ThemeManager>
-      <BrowserRouter>
-      <header>
-        <Navbar />
-      </header>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/user/overview" element={<Overview />} />
-          <Route path="/store" element={<Store />} />
-        </Routes>
-      </BrowserRouter>
-    </ThemeManager>
-  </ThemeProvider>
-  </>
+  <React.StrictMode>
+    <ThemeProvider>
+      <ThemeManager>
+        <BrowserRouter>
+        <header>
+          <Navbar />
+        </header>
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/user/overview" element={<Overview />} />
+            <Route path="/store" element={<Store />} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeManager>
+    </ThemeProvider>
+  </React.StrictMode>
 )
