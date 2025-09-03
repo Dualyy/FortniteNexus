@@ -6,6 +6,9 @@ import {nanoid} from 'nanoid';
 import { useTheme } from './ThemeContext';
 import { get } from 'http';
 
+import{ UserDataType } from './types/UserDataType';
+import { BarChartProps } from './types/BarChartProps';
+
 // Define the server configuration
 // This will read from the .env file in the root directory
 const server = {
@@ -20,7 +23,7 @@ function App() {
 
 const { isDarkMode } = useTheme();
 const [userData, setUserData] = useState<UserDataType | null>(null);
-const [user, setUser] = useState(null); // Default username for userDataing
+const [user, setUser] = useState(null); // Default username for userData
 const [wins, setWins] = useState(0);
 const [matches, setMatches] = useState(0);
 const [kd, setKd] = useState(0);
@@ -40,84 +43,7 @@ const [winData, setWinData] = useState(
   MODES.map(name => ({ name, wins: 0 }))
 );
 
-//types
-type UserDataType = {
-  image: string;
-  username: string;
-  lastModified?: string;
-  raw?: object; // Raw data from the API, can be used for debugging or further
-  data?: {
-    stats: {
-      all: {
-        overall: {
-          wins: number;
-          matches: number;
-          kd: number;
-          winRate: number;
-          lastModified?: string;
-        };
-        solo: {
-          kd: number;
-          winRate: number;
-          wins: number;
-        };
-        duo: {
-          kd: number;
-          winRate: number;
-          wins: number;
-        };
-        squad: {
-          kd: number;
-          winRate: number;
-          wins: number;
-        };
-      };
-    };
-    battlePass: {
-      level: number;
-      progress: number;
-    };
-  };
-  stats?: {
-    overall: {
-      wins: number;
-      matches: number;
-      kd: number;
-      winRate: number;
-    };
-    solo: {
-      kd: number;
-      winRate: number;
-      wins: number;
-    };
-    duo: {
-      kd: number;
-      winRate: number;
-      wins: number;
-    };
-    squad: {
-      kd: number;
-      winRate: number;
-      wins: number;
-    };
-  };
-  battlePass?: {
-    level: number;
-    progress: number;
-  };
-
-};
-
-type BarChartProps = {
-  user: string;
-  userData: { solo: number; duo: number; squad: number };
-  compareUser?: string;
-  compareData?: { solo: number; duo: number; squad: number };
-  label?: string;
-  color?: string[];
-  sx?: React.CSSProperties;
-}
-
+//TODO: add PSN and XBOX support
  async function getFortniteStats(searchParam :string | FormData) {
 
   
