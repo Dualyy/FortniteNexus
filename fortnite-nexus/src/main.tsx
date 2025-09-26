@@ -39,7 +39,6 @@ createRoot(document.getElementById('root')!).render(
         </header>
           <Routes>
             <Route path="/" element={<App />} />
-            <Route path="/user/overview" element={<Overview />} />
             <Route path="/store" element={<Store />} />
           </Routes>
         </BrowserRouter>

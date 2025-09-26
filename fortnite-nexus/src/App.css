@@ -1,23 +1,94 @@
-:root {
-            --bg-base: #F7FAFC;
-            --bg-card: #FFFFFF;
-            --border-subtle: #E2E8F0;
-            --text-primary: #2B6CB0;
-            --text-success: #38A169;
-            --text-warning: #DD6B20;
-            --text-dark: #2D3748;
-            --text-soft: #718096;
-        }
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
 
-        .dark-mode {
-    --bg-base: #181A20;
-    --bg-card: #23262F;
-    --border-subtle: #353945;
-    --text-primary: #6C8AE4;
-    --text-success: #43D9AD;
-    --text-warning: #FFB86C;
-    --text-dark: #F7FAFC;
-    --text-soft: #A3A3A3;
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+
+:root {
+  --bg-base: #F7FAFC;
+  --bg-card: #FFFFFF;
+  --border-subtle: #E2E8F0;
+  --text-primary: #2B6CB0;
+  --text-success: #38A169;
+  --text-warning: #DD6B20;
+  --text-dark: #2D3748;
+  --text-soft: #718096;
+  
+  /* Add new variables for consistent spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 4rem;
+  
+  /* Add breakpoints as CSS variables */
+  --breakpoint-sm: 600px;
+  --breakpoint-md: 900px;
+  --breakpoint-lg: 1200px;
+  
+  /* New variables for shadows and border radius */
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --radius-md: 8px;
+}
+
+/* Dark mode theme */
+.dark-mode {
+  --bg-base: #181A20;
+  --bg-card: #23262F;
+  --border-subtle: #353945;
+  --text-primary: #6C8AE4;
+  --text-success: #43D9AD;
+  --text-warning: #FFB86C;
+  --text-dark: #F7FAFC;
+  --text-soft: #A3A3A3;
 }
 
 .delete-button {
@@ -26,8 +97,8 @@
     border: none;
     cursor: pointer;
     margin: 20px;
-
 }
+
 
 .profile-container {
   display: flex;
@@ -37,24 +108,27 @@
   padding: 20px;
   max-width: 300px;
   min-width: 300px;
-  margin: 0 auto; /* Center horizontally */
-}
+  margin: 0 auto; 
+} 
+
 
 .paragraph {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; /* Center horizontally */
-  text-align: center;  /* Center text */
+  align-items: center; 
+  text-align: center;  
 }
 
 .Main-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center; /* Center horizontally */
-  min-height: 100vh;   /* Center vertically if desired */
-  text-align: center;  /* Center text */
+  align-items: center;
+  min-height: 90vh;
+  width: 100%;
+  max-width: var(--breakpoint-lg);
+  margin: 0 auto;
+  padding: var(--spacing-md);
 }
 
 .versus {
@@ -67,6 +141,7 @@
     flex-direction: row;
     color: var(--text-dark);
     margin: 20px;
+    flex-wrap: wrap;
 }
 
 .stats-item{
@@ -93,12 +168,24 @@
     margin-top: 50px;
 }
 
-.stats-item-container{
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-    color: var(--text-dark);
-    margin: 20px;
+.stats-item-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--spacing-md);
+  width: 100%;
+  max-width: 900px;
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-md);
+  background-color: var(--bg-card);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stats-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-md);
 }
 
 .stats-item-container h3{
@@ -123,15 +210,21 @@
 }
 
 .searchInput {
-    min-width: 80%;
-    max-width: 700px;
-    padding: 10px;
-    border: 1px solid var(--border-subtle);
-    border-radius: 0.375rem; /* Equivalent to rounded-md */
-    font-size: 1rem;
-    color: var(--text-dark);
-    margin: 30px;
-    background-color: var(--bg-card);
+  width: 100%;
+  max-width: 700px;
+  padding: var(--spacing-md);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--text-dark);
+  background-color: var(--bg-card);
+  transition: border-color 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 2px rgba(43, 108, 176, 0.1);
 }
 
 .compare{
@@ -151,4 +244,241 @@
     flex-direction: column;
     justify-content: center;
     align-content: center;
+}
+
+/* Main header container styling */
+.main-page-header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    padding: var(--spacing-lg);
+    text-align: center;
+    gap: var(--spacing-md);
+    transition: all 0.5s ease-in-out;
+    margin-bottom: 7rem;
+    margin-top: 10rem;
+}
+
+.main-page-header {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: bold;
+    margin-bottom: var(--spacing-md);
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-success) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Search form styling */
+form {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    width: 100%;
+    max-width: 700px;
+    margin-top: var(--spacing-lg);
+}
+
+.searchInput {
+    width: 100%;
+    padding: 1.2rem 1.5rem;
+    font-size: 1.1rem;
+    border: 2px solid var(--border-subtle);
+    border-radius: 50px;
+    background-color: var(--bg-card);
+    color: var(--text-dark);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: var(--text-primary);
+    box-shadow: 0 6px 12px rgba(43, 108, 176, 0.15);
+    transform: translateY(-2px);
+}
+
+.searchInput::placeholder {
+    color: var(--text-soft);
+}
+
+/* Custom checkbox styling */
+.compare {
+    appearance: none;
+    width: 30px;
+    height: 30px;
+    border: 2px solid var(--border-subtle);
+    border-radius: 8px;
+    background-color: var(--bg-card);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.compare:checked {
+    background-color: var(--text-primary);
+    border-color: var(--text-primary);
+}
+
+.compare:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 1.2rem;
+}
+
+.compare:hover {
+    border-color: var(--text-primary);
+    transform: scale(1.05);
+}
+
+/* Descriptive text styling */
+.main-page-header-container p {
+    color: var(--text-soft);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+    animation: fadeIn 0.5s ease-in-out 0.2s backwards;
+}
+
+/* Add these keyframes for the push-up animation */
+@keyframes pushToTop {
+    from {
+        min-height: 80vh;
+        margin-bottom: 7rem;
+        margin-top: 10rem;
+    }
+    to {
+        min-height: 20vh;
+        margin-bottom: 2rem;
+        margin-top: 2rem;
+    }
+}
+
+/* Add this class to apply when content is loaded */
+.main-page-header-container.content-loaded {
+    animation: pushToTop 0.5s ease-in-out forwards;
+}
+
+/* Update the header text animation for the loaded state */
+.content-loaded .main-page-header {
+    font-size: clamp(2rem, 4vw, 3rem);
+    transition: font-size 0.5s ease-in-out;
+}
+
+/* Update form transition for loaded state */
+.content-loaded form {
+    transform: scale(0.9);
+    transition: transform 0.5s ease-in-out;
+}
+
+/* Add a container for consistent card centering */
+.stats-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
+}
+
+.skeleton-card {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-md);
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stats-item-container,
+.graphs-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Ensure content inside cards is centered */
+.header-user-stat {
+    width: 100%;
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stats-container,
+    .skeleton-card {
+        padding: var(--spacing-sm);
+    }
+    
+    .graphs-container .skeleton-card {
+        padding: var(--spacing-sm);
+    }
+}
+
+/* Media Queries */
+@media (max-width: 900px) {
+  .profile-container {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .stats-item-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .stats-item-container {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .main-page-header-container {
+    margin: var(--spacing-xl) 0;
+  }
+}
+
+/* Animations and transitions */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.profile-container, 
+.stats-item-container {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.graphs-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    width: 100%;
+}
+
+.graphs-container .skeleton-card {
+    width: 100%;
+    margin: 0;
+    padding: var(--spacing-md);
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
 }

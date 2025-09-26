@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './App.css'
 import axios from 'axios';
-import { BarChart} from '@mui/x-charts/BarChart';
-import {nanoid} from 'nanoid';
 import { useTheme } from './ThemeContext';
+import PlayerOverview from './components/PlayerOverview';
 
 // import{ UserDataType } from './types/UserDataType'; // Type definition is now in this file.
-import { BarChartProps } from './types/BarChartProps';
 
 // Define the types for the Fortnite stats data
 interface StatsDetail {
@@ -48,27 +46,24 @@ function App() {
 
 const { isDarkMode } = useTheme();
 const [userData, setUserData] = useState<UserDataType | null>(null);
-const [user, setUser] = useState(""); // Default username for userData
+const [user, setUser] = useState("");
 const [wins, setWins] = useState(0);
 const [matches, setMatches] = useState(0);
 const [kd, setKd] = useState(0);
 const[profileImages, setProfileImages] = useState<string[]>([]);
 const [compare, setCompare] = useState<UserDataType | null>(null);
-const [compareUser, setCompareUser] = useState(""); // Default username for comparison
+const [compareUser, setCompareUser] = useState(""); 
 const MODES = ["solo", "duo", "squad"] as const;
 const [kdData, setKdData] = useState(
   MODES.map(name => ({ name, kd: 0 }))
 );
-
 const [winrateData, setWinRateData] = useState(
   MODES.map(name => ({ name, winrate: 0 }))
 );
-
 const [winData, setWinData] = useState(
   MODES.map(name => ({ name, wins: 0 }))
 );
 
-//TODO: add PSN and XBOX support
  async function getFortniteStats(searchParam :string | FormData): Promise<UserDataType | null> {
 
   
@@ -105,184 +100,6 @@ const [winData, setWinData] = useState(
   
 }
 
-//functions
-function getWins() {
-  if (userData) {
-    return wins;
-  }
-}
-
-function getMatches() {
-  if (userData) {
-    return matches;
-  }
-}
-
-function getKd() {
-  if (userData) {
-    return kd;
-  }
-}
-
-function getWinRate() {
-  if (userData) {
-    const winRate = (wins / matches) * 100;
-    return winRate.toFixed(2);
-  }
-}
-
-function StatsItem(){
-  return (<>
- <div className="skeleton-card">
-  <div className="header-user-stat">
-  <h2>Performance overview</h2>
-  </div>
-  <div className='stats-item-container'>
-   <div className='stats-item'>
-          <h4>Wins</h4>
-          <h3>{getWins()}</h3>
-          </div>
-        <div className='stats-item'>
-          <h4>Matches played</h4>
-          <h3>{getMatches()}</h3>
-        </div>
-        <div className='stats-item'>
-          <h4>K/D</h4>
-          <h3>{getKd()}</h3>
-        </div>
-        <div className='stats-item'>
-          <h4>win rate</h4>
-          <h3>{getWinRate()}</h3>
-        </div>
-        </div>
-        </div>
-        </>)
-}
-
-function getStatBg(userValue: number, compareValue: number) {
-  if (userValue > compareValue) return "green";
-  if (userValue < compareValue) return "red";
-  return "gray"; // or leave as default
-}
-
-const statKeys = [
-  { key: "wins", label: "Wins" },
-  { key: "matches", label: "Matches played" },
-  { key: "kd", label: "K/D" },
-  { key: "winRate", label: "Win rate", format: (v: number) => v.toFixed(2) + "%" }
-];
-
-function StatsItemWithCompare() {
-  const userStats = {
-    wins: getWins() ?? 0,
-    matches: getMatches() ?? 0,
-    kd: kd,
-    winRate: parseFloat(getWinRate() ?? "0"),
-  };
-  const compareStats = {
-    wins: compare?.stats?.overall?.wins ?? 0,
-    matches: compare?.stats?.overall?.matches ?? 0,
-    kd: compare?.stats?.overall?.kd ?? 0,
-    winRate: compare?.stats?.overall?.winRate ?? 0,
-  };
-
-  return (
-    <div className="skeleton-card stats-item-with-compare">
-      <div className="user1">
-        <div className="header-user-stat">
-          <h3>{user}</h3>
-          <p className="lastUpdate">
-            ({new Date(userData?.lastModified ?? "").toString()})
-          </p>
-        </div>
-        <div className="user-stats-info">
-          {statKeys.map(({ key, label, format }) => (
-            <div
-              key={key}
-              className="stats-item"
-              style={{
-                color: getStatBg(userStats[key], compareStats[key])
-              }}
-            >
-              <h4>{label}</h4>
-              <h3>{format ? format(userStats[key]) : userStats[key]}</h3>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="user2">
-        <div className="header-user-stat">
-          <h3>{compare?.username}</h3>
-          <p className="lastUpdate">
-            {new Date(compare?.lastModified ?? "").toString()}
-          </p>
-        </div>
-        <div className="user-stats-info">
-          {statKeys.map(({ key, label, format }) => (
-            <div
-              key={key}
-              className="stats-item"
-              style={{
-                color: getStatBg(compareStats[key], userStats[key])
-              }}
-            >
-              <h4>{label}</h4>
-              <h3>{format ? format(compareStats[key]) : compareStats[key]}</h3>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-const barChartCSS ={
-  '.MuiChartsAxis-tickLabel': { fill: '#718096 !important' },
-  '.MuiChartsAxis-label': { fill: '#718096 !important' },
-  '.MuiChartsBar-label': { fill: '#718096 !important' },
-  '.MuiChartsBar-bar:hover': { fill: '#82ca9d !important'},
-  '.MuiChartsAxis-line': { stroke: '#718096 !important', strokeWidth: 1 },
-  '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#718096 !important'},
-  '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#718096 !important'},
-  '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffff !important'},
-  '.css-18dsvps-MuiChartsLegend-root': {color: `${isDarkMode ? '#F7FAFC' : '#718096'}`}
-}
-
-const colors = ['#2B6CB0', '#1e4c7c', '#ffc658']
-
-function BarChartStats({
-  
-  user,
-  userData,
-  compareUser,
-  compareData,
-  color = colors,
-}: BarChartProps) {
-  const series = [
-    {
-      data: [userData.solo, userData.duo, userData.squad],
-      label: user,
-    },
-  ];
-  if (compareUser && compareData) {
-    series.push({
-      data: [compareData.solo, compareData.duo, compareData.squad],
-      label: compareUser,
-    });
-  }
-  return (
-    
-    <BarChart
-      xAxis={[{ data: MODES }]}
-      series={series}
-      height={300}
-      barLabel="value"
-      colors={color}
-      sx={barChartCSS}
-    />
-  );
-}
-
 function deleteUser() {
   if(compareUser){
     setUserData(compare);
@@ -301,154 +118,26 @@ function deleteCompareUser() {
   setCompareUser("");
 }
 
-function Profile(props: {onDelete: () => void , id: string,
-   whatUser: string,
-    profileClass: string,
-     orientation: string, whatUserData: UserDataType | null}) {
-  const level = props.whatUserData?.battlePass?.level ?? "N/A";
-  const progress = props.whatUserData?.battlePass?.progress ?? "N/A";
-
+function Stats() {
   return (
-    <div className={`skeleton-card profile-container ${isDarkMode ? 'dark-mode' : ''}`}>
-    <div className={`${props.profileClass}`}>
-      <div className={`profile-avatar profile-info--${props.orientation} ${isDarkMode ? 'dark-mode' : ''}`}>
-        <img
-          className="profile-image"
-          src={props.whatUserData?.image}
-          alt="Profile"
+    <>
+      {userData ? (
+        <PlayerOverview
+          user={user}
+          userData={userData}
+          compare={compare}
+          compareUser={compareUser}
+          kdData={kdData}
+          winrateData={winrateData}
+          winData={winData}
+          isDarkMode={isDarkMode}
+          deleteUser={deleteUser}
+          deleteCompareUser={deleteCompareUser}
         />
-      </div>
-      <div className={`profile-info ${isDarkMode ? 'dark-mode' : ''}`}>
-        <h2>{props.whatUser}</h2>
-        <hr />
-        <p>Level: {level}</p>
-        <p>Progress: {progress}%</p>
-        <button className={'delete-button'} id={props.id} onClick={() => props.onDelete() }>Delete</button>
-      </div>
-    </div>
-    </div>
+      ) : ""}
+    </>
   );
 }
-
-function Versus(){
-  return(
-  <div className="versus">
-      <h3>V/S</h3>
-    </div>)
-}
-
-function Graphs() {
-  return (<>
-  <div className='skeleton-card graphs-container'>
-  <div className='graphs'>
-    
-        <div className='stats-item-graph'>
-          <h2>K/D ratio</h2>
-  <BarChartStats
-  label="K/D"
-  user={user}
-  userData={{
-    solo: kdData[0].kd,
-    duo: kdData[1].kd,
-    squad: kdData[2].kd,
-  }}
-  compareUser={compare ? compareUser : undefined}
-  compareData={
-    compare
-      ? {
-          solo: compare.stats.solo?.kd ?? 0,
-          duo: compare.stats.duo?.kd ?? 0,
-          squad: compare.stats.squad?.kd ?? 0,
-        }
-      : undefined
-  }
-/>
-</div>
-</div>
-</div>
-<div className={`skeleton-card ${isDarkMode ? 'dark-mode' : ''}`}>
-<div className='stats-item-graph'>
-  <h2>win rate %</h2>
-  <BarChartStats
-  label="Win Rate"
-  user={user}
-  userData={{
-    solo: winrateData[0].winrate,
-    duo: winrateData[1].winrate,
-    squad: winrateData[2].winrate,
-  }}
-  compareUser={compare ? compareUser : undefined}
-  compareData={
-    compare
-      ? {
-          solo: compare.stats.solo?.winRate ?? 0,
-          duo: compare.stats.duo?.winRate ?? 0,
-          squad: compare.stats.squad?.winRate ?? 0,
-        }
-      : undefined
-  }
-/>
-</div>
-</div>
-<div className='skeleton-card'>
-<div className='stats-item-graph'>
-  <h2>wins</h2>
-  <BarChartStats
-  label="Wins"
-  user={user}
-  userData={{
-    solo: winData[0].wins,
-    duo: winData[1].wins,
-    squad: winData[2].wins,
-  }}
-  compareUser={compare ? compareUser : undefined}
-  compareData={
-    compare
-      ? {
-          solo: compare.stats.solo?.wins ?? 0,
-          duo: compare.stats.duo?.wins ?? 0,
-          squad: compare.stats.squad?.wins ?? 0,
-        }
-      : undefined
-  }
-/>
-</div>
-</div>
-
-  </>)
-}
-
-function  PlayerOverview() {
-  if(user)
-  return(<>
-  <div className={`container ${isDarkMode ? 'dark-mode' : ''}`}>
-  <div className='paragraph'>
-    <div className='profile-container'> 
-      <Profile onDelete={deleteUser} whatUser={user} profileClass='profile-one' orientation='left' whatUserData={userData} id={nanoid()} />
-      {compare? <Versus /> : ""}
-    {/* User 2 after select */}
-    { compare ? <Profile onDelete={deleteCompareUser} whatUser={compareUser} profileClass ='profile-two' orientation='right' whatUserData={compare} id={nanoid()} /> : ""}
-    
-    </div>
-        <div>
-          <br/>
-        <div className='stats-container'>
-          {compare ? <StatsItemWithCompare /> : <StatsItem /> }
-
-        <Graphs />        
-        </div>
-      </div>
-      
-      </div>
-      </div>
-  </>)
-}
-
-function Stats() {
-  return(<>
-{ userData ? <PlayerOverview/> : ""}
-  </>
-  )}
   
 //UseEffects
 useEffect(() => {
@@ -521,16 +210,21 @@ useEffect(() =>  {
   return (
     <>
     <div className={`Main-container ${isDarkMode ? 'dark-mode' : ''}`}>
-      <div className={'main-page-header-container'}>
-      <h1 className={'main-page-header'}>Fortnite<span className={'nexus'}>Nexus</span></h1>
-      <p>Get your Fortnite stats in one place!</p>
-      <p>Search for your Fortnite stats by username.</p>
+      <div className={`main-page-header-container ${userData ? 'content-loaded' : ''}`}>
+        <h1 className={'main-page-header'}>Fortnite<span className={'nexus'}>Nexus</span></h1>
+        <p>Get your Fortnite stats in one place!</p>
+        <p>Search for your Fortnite stats by username.</p>
     <form 
   onSubmit={async (e) => {
   e.preventDefault();
   const formData = new FormData(e.target as HTMLFormElement);
-  const searchValue = formData.get('search');
+  let searchValue = formData.get('search') as string;
   const isCompare = formData.get('compare') === 'on';
+
+  if(searchValue !== null){
+  searchValue = searchValue.trim();
+  searchValue = searchValue.replace(/[^\w]/g, '').slice(0, 32);
+  }
 
    if (isCompare && searchValue === user) {
     alert("Can't compare to self");
