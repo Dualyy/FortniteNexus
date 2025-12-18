@@ -4,7 +4,7 @@ import { useTheme } from './../ThemeContext';
 
 
 const MODES = ["solo", "duo", "squad"] as const;
-const colors = ['#2B6CB0', '#1e4c7c', '#ffc658']
+const colors = ['#137a7f', '#5ac8d1', '#86cecb']
 
 
 export default function BarChartStats({
@@ -17,15 +17,14 @@ export default function BarChartStats({
 }: BarChartProps) {
     const { isDarkMode } = useTheme();
     const barChartCSS ={
-        '.MuiChartsAxis-tickLabel': { fill: '#718096 !important' },
-        '.MuiChartsAxis-label': { fill: '#718096 !important' },
-        '.MuiChartsBar-label': { fill: '#718096 !important' },
-        '.MuiChartsBar-bar:hover': { fill: '#82ca9d !important'},
-        '.MuiChartsAxis-line': { stroke: '#718096 !important', strokeWidth: 1 },
-        '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: '#718096 !important'},
-        '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: '#718096 !important'},
-        '.css-m5rwh5-MuiBarLabel-root': {fill: '#ffff !important'},
-        '.css-18dsvps-MuiChartsLegend-root': {color: `${isDarkMode ? '#F7FAFC' : '#718096'}`}
+        '.MuiChartsAxis-tickLabel': { fill: `${isDarkMode ? '#ffffff' : '#137a7f'} !important` },
+        '.MuiChartsAxis-label': { fill: `${isDarkMode ? '#ffffff' : '#137a7f'} !important` },
+        '.MuiChartsBar-label': { fill: `${isDarkMode ? '#ffffff' : '#137a7f'} !important` },
+        '.MuiChartsAxis-line': { stroke: `${isDarkMode ? '#bec8d1' : '#137a7f'} !important`, strokeWidth: 1 },
+        '.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tick': { stroke: `${isDarkMode ? '#bec8d1' : '#137a7f'} !important`},
+        '.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tick': { stroke: `${isDarkMode ? '#bec8d1' : '#137a7f'} !important`},
+        '.css-m5rwh5-MuiBarLabel-root': {fill: `${isDarkMode ? '#ffffff' : '#373b3e'} !important`},
+        '.css-18dsvps-MuiChartsLegend-root': {color: `${isDarkMode ? '#bec8d1' : '#373b3e'} !important`}
     }
     const series = [
     {

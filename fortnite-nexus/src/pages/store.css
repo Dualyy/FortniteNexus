@@ -3,6 +3,7 @@
             --bg-card: #FFFFFF;
             --border-subtle: #E2E8F0;
             --text-primary: #2B6CB0;
+            --blue-primary: #2B6CB0;
             --text-success: #38A169;
             --text-warning: #DD6B20;
             --text-dark: #2D3748;
@@ -11,7 +12,7 @@
 
 .item-Image{
     height: 200px;
-    background-color: var(--text-primary);
+    background-color: var(--blue-primary);
     border-radius: 0.75rem;
 }
 

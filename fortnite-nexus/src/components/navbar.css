@@ -1,22 +1,37 @@
 :root {
-            --bg-base: #F7FAFC;
-            --bg-card: #FFFFFF;
-            --border-subtle: #E2E8F0;
-            --text-primary: #2B6CB0;
-            --text-success: #38A169;
-            --text-warning: #DD6B20;
-            --text-dark: #2D3748;
-            --text-soft: #718096;
+            --bg-base: #bec8d1;
+            --bg-card: #ffffff;
+            --border-subtle: #86cecb;
+            --text-primary: #137a7f;
+            --text-success: #86cecb;
+            --text-warning: #5ac8d1;
+            --text-dark: #373b3e;
+            --text-soft: #137a7f;
         }
 
+/* Dark mode navbar styles */
+.dark-mode {
+    --bg-base: #2a2e31;
+    --bg-card: #373b3e;
+    --border-subtle: #5ac8d1;
+    --text-primary: #ffffff;
+    --text-success: #86cecb;
+    --text-warning: #5ac8d1;
+    --text-dark: #ffffff;
+    --text-soft: #bec8d1;
+}
 
 h1{
     font-family: 'Poppins', sans-serif;
-    color:var(--text-dark)
+    color: var(--text-dark);
 }
 
 .nexus {
-    color: #2B6CB0;
+    color: #137a7f;
+}
+
+.dark-mode .nexus {
+    color: #5ac8d1;
 }
 
 header{
@@ -31,8 +46,8 @@ nav {
     padding: 0;
     display: flex;
     align-items: center;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-    color: #2B6CB0;
+    box-shadow: 0 10px 15px -3px rgba(55, 59, 62, 0.1), 0 4px 6px -4px rgba(55, 59, 62, 0.1);
+    color: var(--text-primary);
 }
 
 ul {
@@ -66,9 +81,13 @@ li:hover {
 
 nav a{
     text-decoration: none;
-    color:var(--text-dark);
+    color: var(--text-dark);
     font-weight: bold;
     align-self: center;
+}
+
+.dark-mode nav a {
+    color: var(--text-dark);
 }
 
 li{

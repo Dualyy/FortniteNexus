@@ -32,7 +32,7 @@ export default function PlayerOverview({
   deleteUser,
   deleteCompareUser,
 }: PlayerOverviewProps) {
-    console.log(userData.overall);
+    console.log(userData.stats.overall);
   if (!user) return null;
   return (
     <div className={`container ${isDarkMode ? 'dark-mode' : ''}`}>

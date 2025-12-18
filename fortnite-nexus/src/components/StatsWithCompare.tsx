@@ -1,37 +1,44 @@
-export default function  StatsItemWithCompare({user, userData, compare}:
-     {user: string,
-         userData: {
-            wins: number,
-            matches: number,
-            kd: number,
-            lastModified?: string},
-            compare?: {username: string,
-                 stats?: {overall: {wins: number, matches: number, kd: number, winRate: number}},
-                  lastModified?: string}}) {
-                    const statKeys = [
-  { key: "wins", label: "Wins" },
-  { key: "matches", label: "Matches played" },
-  { key: "kd", label: "K/D" },
-  { key: "winRate", label: "Win rate", format: (v: number) => v.toFixed(2) + "%" }
-];
+import { UserDataType, StatsDetail } from '../types/UserDataType';
+
+interface StatsWithCompareProps {
+  user: string;
+  userData: StatsDetail;
+  compare: UserDataType;
+}
+
+export default function StatsItemWithCompare({ user, userData, compare }: StatsWithCompareProps) {
+  const statKeys = [
+    { key: "wins", label: "Wins" },
+    { key: "matches", label: "Matches played" },
+    { key: "kd", label: "K/D" },
+    { key: "winRate", label: "Win rate", format: (v: number) => v.toFixed(2) + "%" }
+  ];
+
   const userStats = {
     wins: userData.wins ?? 0,
     matches: userData.matches ?? 0,
-    kd: userData.kd,
-    winRate: (userData.wins / userData.matches) * 100 || 0,
-  };
-  const compareStats = {
-    wins: compare?.stats?.overall?.wins ?? 0,
-    matches: compare?.stats?.overall?.matches ?? 0,
-    kd: compare?.stats?.overall?.kd ?? 0,
-    winRate: compare?.stats?.overall?.winRate ?? 0,
+    kd: userData.kd ?? 0,
+    winRate: userData.winRate ?? 0,
   };
 
-  function getStatBg(userValue: number, compareValue: number) {
-  if (userValue > compareValue) return "green";
-  if (userValue < compareValue) return "red";
-  return "gray"; // or leave as default
-}
+  const compareStats = {
+    wins: compare.stats.overall.wins ?? 0,
+    matches: compare.stats.overall.matches ?? 0,
+    kd: compare.stats.overall.kd ?? 0,
+    winRate: compare.stats.overall.winRate ?? 0,
+  };
+
+  function getStatColor(userValue: number, compareValue: number) {
+    if (userValue > compareValue) return "var(--success)";
+    if (userValue < compareValue) return "var(--danger)";
+    return "var(--text-secondary)";
+  }
+
+  function getStatIcon(userValue: number, compareValue: number) {
+    if (userValue > compareValue) return "📈";
+    if (userValue < compareValue) return "📉";
+    return "⚪";
+  }
 
   return (
     <div className="skeleton-card stats-item-with-compare">
@@ -48,20 +55,20 @@ export default function  StatsItemWithCompare({user, userData, compare}:
               key={key}
               className="stats-item"
               style={{
-                color: getStatBg(userStats[key], compareStats[key])
+                color: getStatColor(userStats[key as keyof typeof userStats], compareStats[key as keyof typeof compareStats])
               }}
             >
-              <h4>{label}</h4>
-              <h3>{format ? format(userStats[key]) : userStats[key]}</h3>
+              <h4>{label} {getStatIcon(userStats[key as keyof typeof userStats], compareStats[key as keyof typeof compareStats])}</h4>
+              <h3>{format ? format(userStats[key as keyof typeof userStats]) : userStats[key as keyof typeof userStats]}</h3>
             </div>
           ))}
         </div>
       </div>
       <div className="user2">
         <div className="header-user-stat">
-          <h3>{compare?.username}</h3>
+          <h3>{compare.username}</h3>
           <p className="lastUpdate">
-            {new Date(compare?.lastModified ?? "").toString()}
+            {new Date(compare.lastModified ?? "").toString()}
           </p>
         </div>
         <div className="user-stats-info">
@@ -70,11 +77,11 @@ export default function  StatsItemWithCompare({user, userData, compare}:
               key={key}
               className="stats-item"
               style={{
-                color: getStatBg(compareStats[key], userStats[key])
+                color: getStatColor(compareStats[key as keyof typeof compareStats], userStats[key as keyof typeof userStats])
               }}
             >
-              <h4>{label}</h4>
-              <h3>{format ? format(compareStats[key]) : compareStats[key]}</h3>
+              <h4>{label} {getStatIcon(compareStats[key as keyof typeof compareStats], userStats[key as keyof typeof userStats])}</h4>
+              <h3>{format ? format(compareStats[key as keyof typeof compareStats]) : compareStats[key as keyof typeof compareStats]}</h3>
             </div>
           ))}
         </div>
@@ -82,4 +89,3 @@ export default function  StatsItemWithCompare({user, userData, compare}:
     </div>
   );
 }
-

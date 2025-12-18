@@ -1,68 +1,26 @@
-export type UserDataType = {
-  image: string;
-  username: string;
-  lastModified?: string;
-  raw?: object; // Raw data from the API, can be used for debugging or further
-  data?: {
-    stats: {
-      all: {
-        overall: {
-          wins: number;
-          matches: number;
-          kd: number;
-          winRate: number;
-          lastModified?: string;
-        };
-        solo: {
-          kd: number;
-          winRate: number;
-          wins: number;
-        };
-        duo: {
-          kd: number;
-          winRate: number;
-          wins: number;
-        };
-        squad: {
-          kd: number;
-          winRate: number;
-          wins: number;
-        };
-      };
-    };
-    battlePass: {
-      level: number;
-      progress: number;
-    };
-  };
-  stats?: {
-    overall: {
-      wins: number;
-      matches: number;
-      kd: number;
-      winRate: number;
-    };
-    solo: {
-      kd: number;
-      winRate: number;
-      wins: number;
-    };
-    duo: {
-      kd: number;
-      winRate: number;
-      wins: number;
-    };
-    squad: {
-      kd: number;
-      winRate: number;
-      wins: number;
-    };
-  };
-  battlePass?: {
-    level: number;
-    progress: number;
-  };
+export interface StatsDetail {
+  wins: number;
+  matches: number;
+  kills: number;
+  kd: number;
+  winRate: number;
+  lastModified: string;
+}
 
-};
+export interface AllStats {
+  overall: StatsDetail;
+  solo: StatsDetail;
+  duo: StatsDetail;
+  squad: StatsDetail;
+  ltm: StatsDetail;
+}
+
+export interface UserDataType {
+  username: string;
+  battlePass: { level: number; progress: number; };
+  image: string | null;
+  stats: AllStats;
+  lastModified: string;
+}
 
 export default UserDataType;

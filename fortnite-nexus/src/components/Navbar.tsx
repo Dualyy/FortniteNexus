@@ -1,5 +1,6 @@
 import {Link} from 'react-router-dom';
 import { useTheme } from '../ThemeContext';
+import './navbar.css';
 
 export default function Navbar() {
 const { isDarkMode, toggleDarkMode } = useTheme();
