@@ -1,27 +1,63 @@
+:root {
+            --bg-base: #bec8d1;
+            --bg-card: #ffffff;
+            --border-subtle: #86cecb;
+            --text-primary: #137a7f;
+            --text-success: #86cecb;
+            --text-warning: #5ac8d1;
+            --text-dark: #373b3e;
+            --text-soft: #137a7f;
+        }
+
+/* Dark mode navbar styles */
+.dark-mode {
+    --bg-base: #2a2e31;
+    --bg-card: #373b3e;
+    --border-subtle: #5ac8d1;
+    --text-primary: #ffffff;
+    --text-success: #86cecb;
+    --text-warning: #5ac8d1;
+    --text-dark: #ffffff;
+    --text-soft: #bec8d1;
+}
+
 h1{
     font-family: 'Poppins', sans-serif;
+    color: var(--text-dark);
 }
 
 .nexus {
-    color: #43787b;
+    color: #137a7f;
+}
+
+.dark-mode .nexus {
+    color: #5ac8d1;
+}
+
+header{
+max-width: 100%;    
 }
 
 nav {
-    background-color: rgb(49, 54, 63);
-    width: 100vw;
+    background-color: var(--bg-base);
+    width: 100%;
     height: 80px;
     margin: 0;
     padding: 0;
     display: flex;
     align-items: center;
+    box-shadow: 0 10px 15px -3px rgba(55, 59, 62, 0.1), 0 4px 6px -4px rgba(55, 59, 62, 0.1);
+    color: var(--text-primary);
 }
 
 ul {
     margin: 0;
+    margin-left: 0;
     padding: 0;
     display: flex;
     align-items: center;
     width: 100%;
+    height: 100%;
 }
 
 .right-nav {
@@ -32,16 +68,26 @@ ul {
 
 .right-nav li:hover {
     cursor: pointer;
-    background-color: rgba(179, 179, 179, 0.541);
+    background-color: var(--border-subtle);
+    padding-top: 29px;
+    padding-bottom: 29px;
+}
+li:hover {
+    cursor: pointer;
+    background-color: var(--border-subtle);
     padding-top: 29px;
     padding-bottom: 29px;
 }
 
 nav a{
     text-decoration: none;
-    color: white;
+    color: var(--text-dark);
     font-weight: bold;
     align-self: center;
+}
+
+.dark-mode nav a {
+    color: var(--text-dark);
 }
 
 li{
@@ -49,8 +95,36 @@ li{
     align-items: center;
     justify-content: center;
     list-style: none;
-    margin: 0 20px;
     font-size: 18px;
-    width: 200px;
+    width: 100px;
     text-align: center;
+    height: 75px;
+}
+
+.button-mode{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;;
+    font-size: 2rem;
+    border: none;
+    background: transparent;
+}
+
+@media (max-width: 700px) {
+  nav, ul {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  li {
+    width: auto;
+    min-width: 60px;
+    font-size: 16px;
+    padding: 0 8px;
+    height: 60px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
 }
